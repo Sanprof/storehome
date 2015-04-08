@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Инструменты - @ViewBag.Title</title>
+    @Styles.Render("~/Content/sbadmin")
+    @Styles.Render("~/Content/auth")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/bundles/admin")
+    @Scripts.Render("~/bundles/auth")
+</head>
+<body>
+    <div id="wrapper" data-bind="loginEnter: true">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="@Url.Content("~/auth")">Инструменты</a>
+            </div>
+        </nav>
+        <!-- Page Content -->
+        @RenderBody()
+    </div>
+    <script>
+        infuser.defaults.templateSuffix = ".tmpl.html";
+        infuser.defaults.templateUrl = "Templates";
+        infuser.defaults.ajax.cache = false;
+
+        ko.applyBindings(new LoginUser({ username: "", password: "", rememberme: false }), document.getElementById('wrapper'));
+    </script>
+</body>
+</html>

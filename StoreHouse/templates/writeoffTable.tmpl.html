@@ -1,0 +1,56 @@
+﻿<table class="table table-striped table-bordered table-hover dataTable tvalign-middle">
+    <thead>
+        <tr>
+            <th class="clicable" data-bind="css: {'sorting': sortField() != 'name',
+                                                    'sorting_asc': sortField()=='name' && sortASC()==true,
+                                                    'sorting_desc': sortField()=='name' && sortASC()==false},
+                                                    click: onChangeSortable.bind($data, 'name')">
+                <span>Название</span>
+            </th>
+            <th class="clicable" data-bind="css: {'sorting': sortField() != 'toolscount',
+                                                    'sorting_asc': sortField()=='toolscount' && sortASC()==true,
+                                                    'sorting_desc': sortField()=='toolscount' && sortASC()==false},
+                                                    click: onChangeSortable.bind($data, 'toolscount')">
+                <span>Количество</span>
+            </th>
+            <th class="clicable" data-bind="css: {'sorting': sortField() != 'time',
+                                                    'sorting_asc': sortField()=='time' && sortASC()==true,
+                                                    'sorting_desc': sortField()=='time' && sortASC()==false},
+                                                    click: onChangeSortable.bind($data, 'time')">
+                <span>Дата</span>
+            </th>
+            <th>
+                <span>Работник</span>
+            </th>
+        </tr>
+    </thead>
+    <!-- ko if: rootApiItems().length > 0 -->
+    <tbody>
+        <!-- ko foreach: rootApiItems-->
+        <tr>
+            <td>
+                <span data-bind="html: name, attr: {title: name}"></span>
+            </td>
+            <td class="text-center">
+                <span data-bind="html: count, attr: {title: count}"></span>
+            </td>
+            <td class="text-center">
+                <span data-bind="html: localTime, attr: {title: localTime}"></span>
+            </td>
+            <td>
+                <span data-bind="text: worker().lastname, attr:{title: worker().fullName()}"></span>
+            </td>
+        </tr>
+        <!-- /ko -->
+    </tbody>
+    <!-- /ko -->
+    <!-- ko if: rootApiItems().length == 0 -->
+    <tbody>
+        <tr>
+            <td colspan="6" align="center">
+                <span>Нет ни одного списанного инструмента</span>
+            </td>
+        </tr>
+    </tbody>
+    <!-- /ko -->
+</table>

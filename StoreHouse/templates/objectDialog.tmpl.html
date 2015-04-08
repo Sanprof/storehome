@@ -1,0 +1,27 @@
+﻿<!-- Modal -->
+<div id="modalView" class="modal fade" tabindex="-1" role="dialog" data-bind="showModal: showDialog">
+    <div class="modal-dialog" data-bind="css: {'modal-lg': wide}">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 align="center" data-bind="text: title" class="modal-title" id="myModalLabel"></h3>
+                <!-- ko if: subtitle -->
+                <h6 align="center" data-bind="html: subtitle" class="modal-title navigation"></h6>
+                <!-- /ko -->
+            </div>
+            <div class="modal-body">
+                <div data-bind="with: object">
+                    <div data-bind="template: {name: $parent.editor}">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-bind="click: onCancelClick, text: customCancelText ? ko.unwrap(customCancelText) : 'Отмена' " class="btn btn-default"></button>
+                <!-- ko if: $data['onApplyClick'] -->
+                <button type="button" data-bind="click: onApplyClick, text: customApplyText ? ko.unwrap(customApplyText) : (isNew ? 'Добавить' : 'Сохранить')" class="btn btn-primary">
+                    Save changes
+                </button>
+                <!-- /ko -->
+            </div>
+        </div>
+    </div>
+</div>

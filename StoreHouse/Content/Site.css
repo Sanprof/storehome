@@ -1,0 +1,65 @@
+﻿.cons {
+    color: red;
+}
+
+.incoming {
+    color: green;
+}
+
+.clicable {
+    cursor: pointer;
+}
+
+button > .text-left-icon {
+    margin-right: 10px;
+}
+
+button > i {
+    margin-top: 4px;
+}
+
+.bottom-buffer {
+    margin-bottom: 15px;
+}
+
+.label-form-control {
+    padding: 10px 0 0 0;
+}
+
+.search-query {
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    width: 200px;
+}
+
+.search-field .form-control-feedback {
+    margin-right: 5px;
+}
+
+.search-field .has-feedback .form-control {
+    padding-right: 35px;
+}
+
+.dropdown-toggle .caret {
+    margin: 10px 0 0 10px;
+}
+
+i.disabled {
+    color: #ccc;
+}
+
+.expand-collapce-chevron {
+    margin-right: 5px;
+}
+
+.span-with-info {
+    margin-left: 17px;
+}
+
+.scrollable-menu {
+    height: auto;
+    width: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}

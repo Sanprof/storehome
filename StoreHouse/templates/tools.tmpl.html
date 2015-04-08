@@ -1,0 +1,9 @@
+﻿<!-- ko with: ToolsControlManager -->
+<!-- ko if: !flatTools() -->
+<!-- ko with: categoryManager -->
+<div data-bind="template: {name: 'pagableTableWrapper', data: {model: $data, tableTmpl: 'categoryTable', headline: ko.unwrap('Категории'), canChangePZ: true, canSearch: true}}"></div>
+<!-- /ko -->
+<!-- /ko -->
+<!-- ko if: flatTools -->
+<!-- /ko -->
+<!-- /ko -->

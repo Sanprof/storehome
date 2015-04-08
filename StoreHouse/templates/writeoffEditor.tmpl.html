@@ -1,0 +1,14 @@
+﻿<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Количество:</span>
+    </div>
+    <div class="col-xs-9">
+        <div class="control-group" data-bind="css: {'has-error': count_edit.hasError()}">
+            <div class="controls">
+                <input data-bind="value: count_edit, unumeric: count_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите количество', type: 'number'}" step="1" class="form-control center-block text-input" />
+                <label class="control-label" data-bind="visible: count_edit.hasError, text: count_edit.validationMessage">
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

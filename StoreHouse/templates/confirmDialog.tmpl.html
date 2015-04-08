@@ -1,0 +1,21 @@
+﻿<!-- Confirm dialog -->
+<span data-bind="text: showDialog"></span>
+<div id="confirm-delete" class="modal fade" aria-hidden="true" tabindex="-1" role="dialog" data-bind="showConfirmModal: showDialog()">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div data-bind="with: cnfrmBtn">
+                <div data-bind="with: head_text">
+                    <div class="modal-header confirm-header" data-bind="text: $data">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <h4 data-bind="dynhtml: currentConfirmText"></h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-bind="click: cancelConfirmDialog, visible: cancelConfirmDialog != null, text: cancelBtnText" class="btn btn-default"></button>
+                <button type="button" id="applyBtn" data-bind="click: onApplyClick, visible: applyCommand() != null" class="btn"></button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Authentication";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4 col-lg-4 col-lg-offset-4">
+            <div class="login-panel panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Вход в систему</h3>
+                </div>
+                <div class="panel-body">
+                    <form role="form" onsubmit="return false;">
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="control-group" data-bind="css: {'has-error': username.hasError()}">
+                                    <input type="text" name="username" data-bind="value: username, valueUpdate : 'afterkeyup', hasfocus: true" class="form-control"
+                                           placeholder="Имя пользователя" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="control-group" data-bind="css: {'has-error': password.hasError()}">
+                                    <input type="password" name="password" data-bind="value: password, valueUpdate : 'afterkeyup'" class="form-control"
+                                           placeholder="Пароль" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div class="checkbox">
+                                        <i class="fa" data-bind="click: rememberMeClick, css: {'fa-square-o': !rememberme(), 'fa-check-square-o': rememberme}"></i><span style="padding-left: 5px;">Запомнить меня</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="position: relative;">
+                                <!-- Change this to a button or input when using this as a form -->
+                                <i style="position: absolute; top: 10px; right: 10px;" class="pull-right" data-bind="css: {'glyphicon fa fa-spinner fa-spin fa-2x': waitingForService}, visible: waitingForService"></i>
+                                <input type="submit" href="javascript:void(0)" class="btn btn-lg btn-success btn-block" data-bind="css: {'disabled': waitingForService}, click: waitingForService() ? null: validate" value="Войти" />
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+﻿<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Количество:</span>
+    </div>
+    <div class="col-xs-9">
+        <div class="control-group" data-bind="css: {'has-error': count_edit.hasError()}">
+            <div class="controls">
+                <input data-bind="value: count_edit, unumeric: count_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите количество', type: 'number'}" step="1" class="form-control center-block text-input" />
+                <label class="control-label" data-bind="visible: count_edit.hasError, text: count_edit.validationMessage">
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Работник:</span>
+    </div>
+    <div class="col-xs-9">
+        <div class="control-group" data-bind="css: {'has-error': worker_edit.hasError()}">
+            <div class="btn-group">
+                <div class="input-group">
+                    <input data-bind="value: worker_edit, typeaHead: ko.unwrap($parents[2].allWorkers), valueUpdate : 'afterkeydown', attr: {type: 'text'}" data-provide="typeahead" class="form-control center-block text-input" />
+                    <div class="input-group-btn">
+                        <span class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-caret-down"></i></span>
+                        <ul class="dropdown-menu dropdown-menu-right scrollable-menu" role="menu" data-bind="foreach: $parents[2].allWorkers">
+                            <li><a href="#"><span data-bind="text: name"></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            <label class="control-label" data-bind="visible: worker_edit.hasError, text: worker_edit.validationMessage">
+            </label>
+        </div>
+    </div>
+</div>

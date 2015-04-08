@@ -1,0 +1,76 @@
+﻿<div class="row bottom-buffer">
+    <div class="col-xs-12">
+        <button class="btn btn-primary pull-right" data-bind="click: addNewClick"><span class="pull-left text-left-icon">Добавить должность</span><i class="fa fa-plus-square-o"></i></button>
+    </div>
+</div>
+<table class="table table-striped table-bordered table-hover dataTable tvalign-middle">
+    <thead>
+        <tr>
+            <th class="clicable" data-bind="css: {'sorting': sortField() != 'name',
+                                                    'sorting_asc': sortField()=='name' && sortASC()==true,
+                                                    'sorting_desc': sortField()=='name' && sortASC()==false},
+                                                    click: onChangeSortable.bind($data, 'name')">
+                <span>Название</span>
+            </th>
+            <th class="clicable" data-bind="css: {'sorting': sortField() != 'description',
+                                                    'sorting_asc': sortField()=='description' && sortASC()==true,
+                                                    'sorting_desc': sortField()=='description' && sortASC()==false},
+                                                    click: onChangeSortable.bind($data, 'description')">
+                <span>Описание</span>
+            </th>
+            <th>
+                <span>Изменить</span>
+            </th>
+            <th>
+                <span>Удалить</span>
+            </th>
+        </tr>
+    </thead>
+    <!-- ko if: rootApiItems().length > 0 -->
+    <tbody>
+        <!-- ko foreach: rootApiItems-->
+        <tr class="clicable">
+            <td>
+                <span data-bind="html: name, attr: {title: name}"></span>
+            </td>
+            <td>
+                <span data-bind="text: description, attr: {title: description}"></span>
+            </td>
+            <td class="text-center">
+                <i class="fa fa-edit text-primary clicable" data-bind="click: $parent.editClick"></i>
+            </td>
+            <td class="text-center">
+                <i class="fa fa-trash-o text-danger clicable" data-bind="click: rootPosition() ? null : $parent.onDeletePosition, css: {'disabled': rootPosition}"></i>
+            </td>
+        </tr>
+        <!-- /ko -->
+    </tbody>
+    <!-- /ko -->
+    <!-- ko if: rootApiItems().length == 0 -->
+    <tbody>
+        <tr>
+            <td colspan="6" align="center">
+                <span>Нет ни одной должности, добавьте новую, нажав на "Добавить должность"</span>
+            </td>
+        </tr>
+    </tbody>
+    <!-- /ko -->
+</table>
+<div data-bind="with: selectedItem">
+    <div data-bind="template: {
+                name: 'objectDialog', data: {
+                    showDialog: $parent.showDialog,
+                    wide: false,
+                    isNew: ko.unwrap($data.isNew),
+                    customCancelText: null,
+                    customApplyText: null,
+                    title: 'Должность',
+                    subtitle: ko.unwrap($data.name),
+                    editor: 'categoryEditor',
+                    object: $data,
+                    onCancelClick: $parent.onCancelDialog,
+                    onApplyClick: $parent.onApplyDialog
+                }
+                }">
+    </div>
+</div>

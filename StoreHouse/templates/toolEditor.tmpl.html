@@ -1,0 +1,30 @@
+﻿<div class="group-editor">
+    <div class="row bottom-buffer">
+        <div class="col-xs-3">
+            <span class="pull-right label-form-control">Название:</span>
+        </div>
+        <div class="col-xs-9">
+            <div class="control-group" data-bind="css: {'has-error': name_edit.hasError()}">
+                <div class="controls">
+                    <input data-bind="value: name_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите название', type: 'text'}" class="form-control center-block text-input" />
+                    <label class="control-label" data-bind="visible: name_edit.hasError, text: name_edit.validationMessage">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row bottom-buffer">
+        <div class="col-xs-3">
+            <span class="pull-right label-form-control" data-bind="text: $data.isNew() ? 'Количество:':'Добавить:'"></span>
+        </div>
+        <div class="col-xs-9">
+            <div class="control-group" data-bind="css: {'has-error': count_edit.hasError()}">
+                <div class="controls">
+                    <input data-bind="value: count_edit, unumeric: count_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите количество', type: 'text'}" class="form-control center-block text-input" />
+                    <label class="control-label" data-bind="visible: count_edit.hasError, text: count_edit.validationMessage">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

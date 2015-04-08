@@ -1,0 +1,43 @@
+﻿<div class="panel panel-default">
+    <div data-bind="css: {'panel-heading': 'headline' in $data, 'panel-wo-heading': !('headline' in $data)}">
+        <!-- ko if: 'headline' in $data -->
+        <i class="fa fa-table"></i>
+        <span data-bind="text: headline"></span>
+        <!-- /ko -->
+        <div data-bind="visible: canSearch" class="pull-right" style="margin: -5px 0 0px 10px;  position: relative;">
+            <div class="form-group has-feedback search-field">
+                <input type="text" class="form-control input-sm search-query" placeholder="Поиск" data-bind="value:model.search, valueUpdate: ['afterkeydown', 'input']" />
+                <i class="form-control-feedback fa fa-search"></i>
+            </div>
+        </div>
+        <div data-bind="visible: canChangePZ, css: {'pull-right': 'headline' in $data}" style="margin: -5px 0 0 0;">
+            <select class="form-control input-sm" style="display: inline; width: 67px;" data-bind="options: model.pageSizes, value: model.pageSize, optionsAfterRender: function(option, item){ ko.applyBindingsToNode(option, { visible: item != 99999 }, item); }"></select>
+            <label>
+                &nbsp;записей на странице
+            </label>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div data-bind="template: { name: tableTmpl, data: model}"></div>
+        <div class="row" data-bind="visible: model.itemsCount() > model.pageSize()">
+            <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                <div class="dataTables_info">
+                    <span class="pull-left" data-bind="text: 'Showing ' + model.pageFrom() + ' to ' + model.pageTo() + ' of ' + model.itemsCount()"></span>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                <div class="dataTables_paginate pull-right" data-bind="with: model.tablePager">
+                    <!-- ko if: items().length > 3 -->
+                    <ul class="pagination" data-bind="foreach: items()">
+                        <li data-bind="css:{'disabled': disabled, 'active': active}">
+                            <a href="javascript:void(0)" data-bind="text: displayText, click: disabled || active ? null : $parent.changePageIndex.bind($data, value, $parents[1].model.itemsCount(), $parents[2].pageSize())"></a>
+                        </li>
+                    </ul>
+                    <!-- /ko -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
