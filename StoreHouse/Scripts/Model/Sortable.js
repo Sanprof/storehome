@@ -1,11 +1,12 @@
 ﻿function Sortable() {
     var self = this;
+    self.manualLoadOnPageSize = ko.observable(false);
     self.emptyListMessage = ko.observable();
     self.pageSize = ko.observable(10);
     self.pageSize.subscribe(function (newValue) {
         self.pageIndex(1);
         self.tablePager.recalc(self.pageIndex(), self.itemsCount(), self.pageSize());
-        if (self.loadPartialData) {
+        if (self.loadPartialData && !self.manualLoadOnPageSize()) {
             self.loadPartialData();
         }
     });

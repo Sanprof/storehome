@@ -18,11 +18,8 @@
                                                     click: onChangeSortable.bind($data, 'description')">
                 <span>Описание</span>
             </th>
-            <th>
-                <span>Изменить</span>
-            </th>
-            <th>
-                <span>Удалить</span>
+            <th width="100">
+                <span>Меню</span>
             </th>
         </tr>
     </thead>
@@ -37,10 +34,13 @@
                 <span data-bind="text: description, attr: {title: description}"></span>
             </td>
             <td class="text-center">
-                <i class="fa fa-edit text-primary clicable" data-bind="click: $parent.editClick"></i>
-            </td>
-            <td class="text-center">
-                <i class="fa fa-trash-o text-danger clicable" data-bind="click: rootPosition() ? null : $parent.onDeletePosition, css: {'disabled': rootPosition}"></i>
+                <div class="dropdown">
+                    <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'position_menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu" data-bind="attr: {'aria-labelledby': 'position_menu' + $index()}">
+                        <li class="clicable" data-bind="click: $parent.editClick"><a><i class="fa fa-edit text-primary text-right-icon"></i>Изменить</a></li>
+                        <li class="clicable" data-bind="click: rootPosition() ? null : $parent.onDeletePosition, css: {'disabled': rootPosition}"><a><i class="fa fa-trash-o text-danger text-right-icon"></i>Удалить</a></li>
+                    </ul>
+                </div>
             </td>
         </tr>
         <!-- /ko -->

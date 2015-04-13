@@ -24,14 +24,8 @@
                                                     click: onChangeSortable.bind($data, 'toolscount')">
                 <span>Количество инструментов</span>
             </th>
-            <th>
-                <span>Добавить</span>
-            </th>
-            <th>
-                <span>Изменить</span>
-            </th>
-            <th>
-                <span>Удалить</span>
+            <th width="100">
+                <span>Меню</span>
             </th>
         </tr>
     </thead>
@@ -40,9 +34,7 @@
         <!-- ko foreach: rootApiItems-->
         <tr>
             <td data-bind="click: expandCollapse" class="clicable">
-                <i class="fa expand-collapce-chevron" data-bind="css: {'fa-chevron-down': expanded, 'fa-chevron-right': !expanded()}">
-                </i>
-                <span data-bind="html: name, attr: {title: description}"></span>
+                <i class="fa text-right-icon" data-bind="css: {'fa-chevron-down': expanded, 'fa-chevron-right': !expanded()}"></i><span data-bind="html: name, attr: {title: description}"></span>
             </td>
             <td class="text-center">
                 <span data-bind="text: toolpositions, attr: {title: toolpositions}"></span>
@@ -51,13 +43,14 @@
                 <i class="fa fa-gears" style="margin-right: 10px;"></i><span data-bind="html: toolscount, attr:{title: toolscount}"></span>
             </td>
             <td class="text-center">
-                <i class="fa fa-plus-square text-success clicable" data-bind="click: addToolClick"></i>
-            </td>
-            <td class="text-center">
-                <i class="fa fa-edit text-primary clicable" data-bind="click: $parent.editClick"></i>
-            </td>
-            <td class="text-center">
-                <i class="fa fa-trash-o text-danger clicable" data-bind="click: $parent.onDeleteCategory"></i>
+                <div class="dropdown">
+                    <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'category_menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu" data-bind="attr: {'aria-labelledby': 'category_menu' + $index()}">
+                        <li class="clicable" data-bind="click: addToolClick"><a><i class="fa fa-plus-square text-success text-right-icon"></i>Добавить инструмент</a></li>
+                        <li class="clicable" data-bind="click: $parent.editClick"><a><i class="fa fa-edit text-primary text-right-icon"></i>Изменить</a></li>
+                        <li class="clicable" data-bind="click: $parent.onDeleteCategory"><a><i class="fa fa-trash-o text-danger text-right-icon"></i>Удалить</a></li>
+                    </ul>
+                </div>
             </td>
         </tr>
         <tr data-bind="visible: expanded">
@@ -83,20 +76,8 @@
                             <th>
                                 <span>Выдано</span>
                             </th>
-                            <th>
-                                <span>Принять</span>
-                            </th>
-                            <th>
-                                <span>Выдать</span>
-                            </th>
-                            <th>
-                                <span>Изменить</span>
-                            </th>
-                            <th>
-                                <span>Списать</span>
-                            </th>
-                            <th>
-                                <span>Удалить</span>
+                            <th width="100">
+                                <span>Меню</span>
                             </th>
                         </tr>
                     </thead>
@@ -117,19 +98,15 @@
                                 <i class="fa fa-info-circle pull-right text-info" style="margin-top: 3px;" data-bind="css: {'disabled': toolsinuse() == 0}"></i>
                             </td>
                             <td class="text-center">
-                                <i class="fa fa-plus-square-o text-success clicable" data-bind="click: canIncoming() ? $parent.onIncommingTool : null, css : {'disabled': !canIncoming()}"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-share-square-o text-danger clicable" data-bind="click: canIssuing() ? $parent.onIssueTool : null, css : {'disabled': !canIssuing()}"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-edit text-primary clicable" data-bind="click: $parent.editClick"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-minus-square text-danger clicable" data-bind="click: canIssuing() ? $parent.onWriteOffTool : null, css : {'disabled': !canIssuing()}"></i>
-                            </td>
-                            <td class="text-center">
-                                <i class="fa fa-trash-o text-danger clicable" data-bind="click: !canIncoming() ? $parent.onDeleteTool : null, css : {'disabled': canIncoming()}"></i>
+                                <div class="dropdown">
+                                    <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu" data-bind="attr: {'aria-labelledby': 'menu' + $index()}">
+                                        <li class="clicable" data-bind="click: canIssuing() ? $parent.onIssueTool : null, css : {'disabled': !canIssuing()}"><a><i class="fa fa-sign-out text-danger text-right-icon"></i>Выдать</a></li>
+                                        <li class="clicable" data-bind="click: $parent.editClick"><a><i class="fa fa-edit text-primary clicable text-right-icon"></i>Изменить</a></li>
+                                        <li class="clicable" data-bind="click: canIssuing() ? $parent.onWriteOffTool : null, css : {'disabled': !canIssuing()}"><a><i class="fa fa-minus-square text-danger text-right-icon"></i>Списать</a></li>
+                                        <li class="clicable" data-bind="click: !canIncoming() ? $parent.onDeleteTool : null, css : {'disabled': canIncoming()}"><a><i class="fa fa-trash-o text-danger text-right-icon"></i>Удалить</a></li>
+                                    </ul>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
@@ -215,20 +192,20 @@
                 }">
         </div>
     </div>
-    <div data-bind="with: incIssueItem">
+    <div data-bind="with: issueItem">
         <div data-bind="template: {
                 name: 'objectDialog', data: {
-                    showDialog: $parent.showIncomingIssueDialog,
+                    showDialog: $parent.showIssueDialog,
                     wide: false,
                     isNew: false,
                     customCancelText: null,
-                    customApplyText: 'Применить',
-                    title: ($parent.isincoming() ? 'Принятие' : 'Выдача') + ' инструмента',
+                    customApplyText: 'Выдать',
+                    title: 'Выдача инструмента',
                     subtitle: ko.unwrap($data.name),
                     editor: 'issuedincomingEditor',
                     object: $data,
-                    onCancelClick: $parent.onIncIssueCancelDialog,
-                    onApplyClick: $parent.onIncIssueApplyDialog
+                    onCancelClick: $parent.onIssueCancelDialog,
+                    onApplyClick: $parent.onIssueApplyDialog
                 }
                 }">
         </div>
@@ -241,7 +218,7 @@
                     isNew: false,
                     customCancelText: 'Закрыть',
                     customApplyText: null,
-                    title: 'Информация по работникам',
+                    title: 'Кому выдано',
                     subtitle: ko.unwrap($data.toolname),
                     editor: 'usersByUsetTool',
                     object: $data.items,

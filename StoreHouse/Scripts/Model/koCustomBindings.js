@@ -159,6 +159,66 @@ ko.bindingHandlers.unumeric = {
     }
 };
 
+ko.bindingHandlers.urangenumeric = {
+    init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        var val = valueAccessor();
+        $(element).on("keyup", function (event) {
+            // Allow: backspace, delete, tab, escape, and enter
+            if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 ||
+                // Allow: Ctrl+A
+                (event.keyCode == 65 && event.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (event.keyCode >= 35 && event.keyCode <= 39) ||
+                //reload page
+                event.keyCode == 116 ||
+                event.ctrlKey && event.keyCode == 82) {
+                // let it happen, don't do anything
+                if (parseInt(ko.unwrap(val.modelValue)) < val.min) {
+                    val.modelValue(val.min);
+                }
+                console.log(ko.unwrap(val.modelValue));
+                return;
+            }
+            else {
+                // Ensure that it is a number and stop the keypress
+                if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                    event.preventDefault();
+                }
+            }
+        });
+
+        $(element).on("keydown", function (event) {
+            // Allow: backspace, delete, tab, escape, and enter
+            if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 27 || event.keyCode == 13 ||
+                // Allow: Ctrl+A
+                (event.keyCode == 65 && event.ctrlKey === true) ||
+                // Allow: home, end, left, right
+                (event.keyCode >= 35 && event.keyCode <= 39) ||
+                //reload page
+                event.keyCode == 116 ||
+                event.ctrlKey && event.keyCode == 82) {
+                // let it happen, don't do anything
+                return;
+            }
+            else {
+                // Ensure that it is a number and stop the keypress
+                if (event.shiftKey || (event.keyCode < 48 || event.keyCode > 57) && (event.keyCode < 96 || event.keyCode > 105)) {
+                    event.preventDefault();
+                }
+                else {
+                    if (parseInt(ko.unwrap(val.modelValue) + String.fromCharCode(event.keyCode - (event.keyCode >= 96 ? 48 : 0))) > val.max) {
+                        event.preventDefault();
+                    }
+                    if (parseInt(ko.unwrap(val.modelValue)) < val.min) {
+                        event.preventDefault();
+                    }
+                    console.log(ko.unwrap(val.modelValue) + String.fromCharCode(event.keyCode - (event.keyCode >= 96 ? 48 : 0)));
+                }
+            }
+        });
+    }
+};
+
 ko.bindingHandlers.year = {
     init: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
         $(element).on("keydown", function (event) {
@@ -397,7 +457,7 @@ ko.bindingHandlers.drawLineChart = {
             annotateDisplay: true,
             annotateLabel: anotateLableFunc,
             yAxisMinimumInterval: 10,
-            graphMax : 100,
+            graphMax: 100,
             scaleShowGridLines: false,
             segmentShowStroke: true,
             segmentStrokeWidth: 2,

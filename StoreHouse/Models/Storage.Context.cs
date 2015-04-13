@@ -72,5 +72,14 @@ namespace StoreHouse.Models
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Get_UsersUsedTool_Result>("Get_UsersUsedTool", toolIDParameter);
         }
+    
+        public virtual ObjectResult<Get_ToolsUsedByUser_Result> Get_ToolsUsedByUser(Nullable<int> workerID)
+        {
+            var workerIDParameter = workerID.HasValue ?
+                new ObjectParameter("WorkerID", workerID) :
+                new ObjectParameter("WorkerID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Get_ToolsUsedByUser_Result>("Get_ToolsUsedByUser", workerIDParameter);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using StoreHouse.Models;
 using StoreHouse.Models.Constants;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -15,35 +16,23 @@ namespace StoreHouse.Controllers.api
         {
             return store
                 .ToolsUses
-                .Select(tu => new
-                        {
-                            isinc = tu.Count > 0,
-                            name = tu.Tool.Name,
-                            count = System.Math.Abs(tu.Count),
-                            time = tu.CreationDate,
-                            worker = new
-                            {
-                                lastname = tu.Worker.LastName,
-                                firstname = tu.Worker.FirstName,
-                                middlename = tu.Worker.MiddleName,
-                            }
-                        })
-                .OrderByDescending(q => q.time)
+                .Where(t => !t.Tool.Category.IsDeleted && (!t.Tool.IsDeleted.HasValue || (t.Tool.IsDeleted.HasValue && !t.Tool.IsDeleted.Value)))
+                .OrderByDescending(h => h.CreationDate)
                 .Take(100)
                 .AsEnumerable()
-                .Select(q => new
-                {
-                    isinc = q.isinc,
-                    name = q.name,
-                    count = q.count,
-                    time = q.time.ToString("dd.MM.yyyyTHH:mm"),
-                    worker = new
-                    {
-                        lastname = q.worker.lastname,
-                        firstname = q.worker.firstname,
-                        middlename = q.worker.middlename,
-                    }
-                })
+                .Select(tu =>
+                        {
+                            dynamic expando = new ExpandoObject();
+                            expando.isinc = tu.Count > 0;
+                            expando.name = tu.Tool.Name;
+                            expando.count = System.Math.Abs(tu.Count);
+                            expando.time = tu.CreationDate;
+                            expando.worker = new ExpandoObject();
+                            expando.worker.lastname = tu.Worker.LastName;
+                            expando.worker.firstname = tu.Worker.FirstName;
+                            expando.worker.middlename = tu.Worker.MiddleName;
+                            return expando;
+                        })
                 .ToList<object>();
         }
 
@@ -67,6 +56,18 @@ namespace StoreHouse.Controllers.api
                 inuse = System.Math.Abs(ToolsHelper.ToolStat(store)),
             };
             return Ok(ApiResponseManager.CreateResponse(new Status(status), response));
+        }
+
+        protected override object GetAdditionDataAfterSorting(dynamic response, dynamic data)
+        {
+            if (response != null)
+            {
+                foreach (var item in response)
+                {
+                    item.time = item.time.ToString("dd.MM.yyyyTHH:mm");
+                }
+            }
+            return response;
         }
     }
 }

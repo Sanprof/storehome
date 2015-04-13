@@ -36,11 +36,8 @@
                                                     click: onChangeSortable.bind($data, 'toolscount')">
                 <span>Инструменты</span>
             </th>
-            <th>
-                <span>Изменить</span>
-            </th>
-            <th>
-                <span>Удалить</span>
+            <th width="100">
+                <span>Меню</span>
             </th>
         </tr>
     </thead>
@@ -62,13 +59,17 @@
             </td>
             <td class="text-center">
                 <span data-bind="html: toolscount, attr: {title: toolscount}" class="span-with-info"></span>
-                <i class="fa fa-info-circle pull-right text-info" style="margin-top: 3px;" data-bind="clic: toolscount() > 0 ? null : null, css: {'disabled': toolscount() == 0, 'clicable': toolscount()>0}"></i>
+                <i class="fa fa-info-circle pull-right text-info" style="margin-top: 3px;" data-bind="click: toolscount() > 0 ? $parent.userInfoClick : null, css: {'disabled': toolscount() == 0, 'clicable': toolscount()>0}"></i>
             </td>
             <td class="text-center">
-                <i class="fa fa-edit text-primary clicable" data-bind="click: $parent.editClick"></i>
-            </td>
-            <td class="text-center">
-                <i class="fa fa-trash-o text-danger clicable" data-bind="click: id() > 1 ? $parent.onDeleteWorker: null, visible: id() > 1"></i>
+                <div class="dropdown">
+                    <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'position_menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu" data-bind="attr: {'aria-labelledby': 'position_menu' + $index()}">
+                        <li class="clicable" data-bind="click: $parent.onIssueTool"><a><i class="fa fa-sign-out text-danger text-right-icon"></i>Выдать</a></li>
+                        <li class="clicable" data-bind="click: $parent.editClick"><a><i class="fa fa-edit text-primary text-right-icon"></i>Изменить</a></li>
+                        <li class="clicable" data-bind="click: id() > 1 ? $parent.onDeleteWorker: null, visible: id() > 1"><a><i class="fa fa-trash-o text-danger text-right-icon"></i>Удалить</a></li>
+                    </ul>
+                </div>
             </td>
         </tr>
         <!-- /ko -->
@@ -98,6 +99,42 @@
                     object: $data,
                     onCancelClick: $parent.onCancelDialog,
                     onApplyClick: $parent.onApplyDialog
+                }
+                }">
+    </div>
+</div>
+<div data-bind="with: issueItem">
+    <div data-bind="template: {
+                name: 'objectDialog', data: {
+                    showDialog: $parent.showIssueDialog,
+                    wide: false,
+                    isNew: false,
+                    customCancelText: null,
+                    customApplyText: 'Применить',
+                    title: 'Выдача инструмента',
+                    subtitle: ko.unwrap($data.name),
+                    editor: 'issuedincomingEditor',
+                    object: $data,
+                    onCancelClick: $parent.onIssueCancelDialog,
+                    onApplyClick: $parent.onIssueApplyDialog
+                }
+                }">
+    </div>
+</div>
+<div data-bind="with: infoItem">
+    <div data-bind="template: {
+                name: 'objectDialog', data: {
+                    showDialog: $parent.showInfoDialog,
+                    wide: false,
+                    isNew: false,
+                    customCancelText: 'Закрыть',
+                    customApplyText: null,
+                    title: 'Выданные инструменты',
+                    subtitle: ko.unwrap($data.workername),
+                    editor: 'toolsByUser',
+                    object: $data.items,
+                    onCancelClick: $parent.onInfoCancelDialog,
+                    onApplyClick: null
                 }
                 }">
     </div>

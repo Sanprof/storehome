@@ -10,6 +10,8 @@
     self.sortField("time");
     self.sortASC(false);
     self.templateName = 'startpage';
+    self.manualLoadOnPageSize(true);
+    self.pageSize(100);
 
     self.allTools = ko.observable();
     self.toolsInUse = ko.observable();

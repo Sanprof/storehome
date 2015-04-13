@@ -9,6 +9,7 @@ namespace StoreHouse.Common
         {
             var toolsUses = store
                 .ToolsUses
+                .Where(t => !t.Tool.Category.IsDeleted && (!t.Tool.IsDeleted.HasValue || (t.Tool.IsDeleted.HasValue && !t.Tool.IsDeleted.Value)))
                 .Select(it => it.Count)
                 .ToList();
             if (toolsUses.Count > 0)
@@ -20,6 +21,7 @@ namespace StoreHouse.Common
         {
             var toolsUses = store
                 .ToolsUses
+                .Where(t => !t.Tool.Category.IsDeleted && (!t.Tool.IsDeleted.HasValue || (t.Tool.IsDeleted.HasValue && !t.Tool.IsDeleted.Value)))
                 .Where(it => it.ToolID == toolID)
                 .Select(it => it.Count)
                 .ToList();
@@ -32,6 +34,7 @@ namespace StoreHouse.Common
         {
             var toolsUses = store
                 .ToolsUses
+                .Where(t => !t.Tool.Category.IsDeleted && (!t.Tool.IsDeleted.HasValue || (t.Tool.IsDeleted.HasValue && !t.Tool.IsDeleted.Value)))
                 .Where(it => it.ToolID == toolID && it.WorkerID == workerID)
                 .Select(it => it.Count)
                 .ToList();
@@ -44,6 +47,7 @@ namespace StoreHouse.Common
         {
             var toolsUses = store
                 .ToolsUses
+                .Where(t => !t.Tool.Category.IsDeleted && (!t.Tool.IsDeleted.HasValue || (t.Tool.IsDeleted.HasValue && !t.Tool.IsDeleted.Value)))
                 .Where(it => it.WorkerID == workerID)
                 .Select(it => it.Count)
                 .ToList();

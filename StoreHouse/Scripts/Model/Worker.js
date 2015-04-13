@@ -14,6 +14,14 @@
         return self.lastname() + ' ' + self.firstname() + ' ' + self.middlename();
     });
 
+    self.shortFullName = ko.computed(function () {
+        if (self.lastname() != null &&
+            self.firstname() != null &&
+            self.middlename() != null) {
+            return self.lastname() + ' ' + self.firstname().substring(0, 1).toUpperCase() + '.' + self.middlename().substring(0, 1).toUpperCase() + '.';
+        }
+    });
+
     if (data) {
         self.init(data);
         if (data.position) {

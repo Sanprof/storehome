@@ -45,12 +45,8 @@ button > i {
     margin: 10px 0 0 10px;
 }
 
-i.disabled {
+span.disabled > i, i.disabled {
     color: #ccc;
-}
-
-.expand-collapce-chevron {
-    margin-right: 5px;
 }
 
 .span-with-info {
@@ -62,4 +58,53 @@ i.disabled {
     width: auto;
     max-height: 200px;
     overflow-x: hidden;
+}
+
+.text-left-icon {
+    margin-left: 7px;
+}
+
+.text-right-icon {
+    margin-right: 7px;
+}
+
+.tvalign-middle > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.tvalign-top > tbody > tr > td {
+    vertical-align: top;
+}
+
+.tvalign-bottom > tbody > tr > td {
+    vertical-align: bottom;
+}
+
+.valign-middle {
+    vertical-align: middle;
+}
+
+.valign-top {
+    vertical-align: top;
+}
+
+.valign-bottom {
+    vertical-align: bottom;
+}
+
+.trvalign-middle > td {
+    vertical-align: middle;
+}
+
+.trvalign-top > td {
+    vertical-align: top;
+}
+
+.trvalign-bottom > td {
+    vertical-align: bottom;
+}
+
+.tool-count {
+    font-weight: bold;
+    font-size: 120%;
 }

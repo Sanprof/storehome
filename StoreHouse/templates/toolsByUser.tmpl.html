@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th>
-                Работник
+                Инструмент
             </th>
             <th>
                 Количество
@@ -15,7 +15,7 @@
     <tbody data-bind="foreach: $data">
         <tr>
             <td>
-                <span data-bind="text: worker.fullName()"></span>
+                <span data-bind="text: name"></span>
             </td>
             <td class="text-center" width="60">
                 <span class="text-primary tool-count" data-bind="text: count"></span>

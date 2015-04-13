@@ -184,6 +184,9 @@
     <Compile Include="Models\DeletedTool.cs">
       <DependentUpon>Storage.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Get_ToolsUsedByUser_Result.cs">
+      <DependentUpon>Storage.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Get_UsersUsedTool_Result.cs">
       <DependentUpon>Storage.tt</DependentUpon>
     </Compile>
@@ -350,6 +353,7 @@
     <Content Include="templates\startpage.tmpl.html" />
     <Content Include="templates\toolEditor.tmpl.html" />
     <Content Include="templates\tools.tmpl.html" />
+    <Content Include="templates\toolsByUser.tmpl.html" />
     <Content Include="templates\toolsinuseView.tmpl.html" />
     <Content Include="templates\usersByUsetTool.tmpl.html" />
     <Content Include="templates\workerEditor.tmpl.html" />

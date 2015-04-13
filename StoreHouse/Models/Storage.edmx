@@ -243,6 +243,9 @@
         <Function Name="DeleteUserSessionsByUserID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="WorkerID" Type="int" Mode="In" />
         </Function>
+        <Function Name="Get_ToolsUsedByUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="WorkerID" Type="int" Mode="In" />
+        </Function>
         <Function Name="Get_UsersUsedTool" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ToolID" Type="int" Mode="In" />
         </Function>
@@ -484,7 +487,10 @@
             <End Role="ToolsUs" EntitySet="ToolsUses" />
           </AssociationSet>
           <FunctionImport Name="Get_UsersUsedTool" ReturnType="Collection(Storage.Model.Get_UsersUsedTool_Result)">
-            <Parameter Name="ToolID" Mode="In" Type="Int32" />
+          <Parameter Name="ToolID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Get_ToolsUsedByUser" ReturnType="Collection(Storage.Model.Get_ToolsUsedByUser_Result)">
+            <Parameter Name="WorkerID" Mode="In" Type="Int32" />
           </FunctionImport>
           </EntityContainer>
         <EntityType Name="UserSession">
@@ -632,6 +638,12 @@
           <Property Type="String" Name="MiddleName" Nullable="false" MaxLength="192" />
           <Property Type="Int32" Name="Count" Nullable="true" />
         </ComplexType>
+        <ComplexType Name="Get_ToolsUsedByUser_Result">
+          <Property Type="Int32" Name="ToolID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="255" />
+          <Property Type="Int32" Name="WorkerID" Nullable="false" />
+          <Property Type="Int32" Name="Count" Nullable="true" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -756,6 +768,16 @@
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Get_ToolsUsedByUser" FunctionName="Storage.Model.Store.Get_ToolsUsedByUser">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Storage.Model.Get_ToolsUsedByUser_Result">
+                <ScalarProperty Name="ToolID" ColumnName="ToolID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
                 <ScalarProperty Name="Count" ColumnName="Count" />
               </ComplexTypeMapping>
             </ResultMapping>

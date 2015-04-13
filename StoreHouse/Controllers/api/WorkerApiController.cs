@@ -114,19 +114,26 @@ namespace StoreHouse.Controllers.api
         }
 
         [HttpPost]
-        [Route("usedtools")]
-        public async Task<IHttpActionResult> ToolsInUse([FromBody]SimpleDeleteModel data)
+        [Route("used")]
+        public async Task<IHttpActionResult> ToolsInUse([FromBody]ToolsInCategoryModel data)
         {
             Code status = default(Code);
             dynamic response = null;
 
-            /*store
-                .IssuedTools
-                .Where(it => it.WorkerID == data.id)
-                .GroupBy(it => it.ToolID)
-                .Select(it => new
+            var objs = store
+                .Get_ToolsUsedByUser(data.id)
+                .Select(g => new
                 {
-                });*/
+                    tool = new
+                    {
+                        id = g.ToolID,
+                        name = g.Name
+                    },
+                    id = g.WorkerID,
+                    count = g.Count
+                })
+                .ToList<object>();
+            response = objs;
             return Ok(ApiResponseManager.CreateResponse(new Status(status), response));
         }
     }

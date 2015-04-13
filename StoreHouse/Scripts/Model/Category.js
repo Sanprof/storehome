@@ -7,15 +7,13 @@
     self.showWriteOffDialog = ko.observable(false);
     self.writeoffItem = ko.observable();
 
-    self.showIncomingIssueDialog = ko.observable(false);
-    self.incIssueItem = ko.observable();
+    self.showIssueDialog = ko.observable(false);
+    self.issueItem = ko.observable();
 
     self.showInfoDialog = ko.observable(false);
     self.infoItem = ko.observable();
 
-    self.isincoming = ko.observable(false);
     self.expanded = ko.observable(false);
-
 
     self.toolpositions = ko.observable();
     self.toolscount = ko.observable();
@@ -24,6 +22,7 @@
     self.rootApi('tools/incat');
     self.rootApiClass('Tool');
     self.sortField('name');
+    self.needReloadInfo = ko.observable(false);
 
     if (data) {
         self.init(data);
@@ -88,18 +87,6 @@
             });
     }
 
-
-
-    self.onIncommingTool = function (item) {
-        self.isincoming(true);
-        self.onIncIssueTool(item);
-    };
-
-    self.onIssueTool = function (item) {
-        self.isincoming(false);
-        self.onIncIssueTool(item);
-    };
-
     self.onDeleteTool = function (item) {
         confirmation.confirm(confirmationJournal.delete_tool,
                item,
@@ -161,7 +148,7 @@
 
 
 
-    self.onIncIssueTool = function (item) {
+    self.onIssueTool = function (item) {
         call_ajax_to_service(
                 'workers',
                 "GET",
@@ -181,8 +168,8 @@
                         } else {
                             obj.worker_edit.hasError(false);
                         }
-                        self.incIssueItem(obj);
-                        self.showIncomingIssueDialog(true);
+                        self.issueItem(obj);
+                        self.showIssueDialog(true);
                         self.allWorkers(ko.utils.arrayMap(responseData.response.data, function (item) {
                             return { id: item.id, name: item.lastname + ' ' + item.firstname + ' ' + item.middlename }
                         }));
@@ -190,14 +177,14 @@
                 });
     };
 
-    self.onIncIssueCancelDialog = function () {
+    self.onIssueCancelDialog = function () {
         self.onCancelDialog();
         self.parent.editedCategory(null);
-        self.showIncomingIssueDialog(false);
-        self.incIssueItem(null);
+        self.showIssueDialog(false);
+        self.issueItem(null);
     };
 
-    self.onIncIssueApplyDialog = function (data) {
+    self.onIssueApplyDialog = function (data) {
         data = data.object;
         var item = 'count_edit';
         if (item in self && 'hasError' in self[item]) {
@@ -210,24 +197,50 @@
             return item.name == ko.unwrap(data.worker_edit);
         });
         if (worker) {
-            call_ajax_to_service(
-                    self.rootApi() + '/incissue',
-                    "POST",
-                    { id: ko.unwrap(data.id), count: ko.unwrap(data.count_edit), isinc: ko.unwrap(self.isincoming), workerid: ko.unwrap(worker.id) },
-                    ko.unwrap(data.id),
-                    function (callBackData, method, responseData) {
-                        if (responseData.status.Code == 0) {
-                            ko.utils.arrayForEach(self.rootApiItems(), function (item) {
-                                if (item.id() == callBackData) {
-                                    item.toolsinuse(responseData.response);
-                                }
-                            });
-                            self.onIncIssueCancelDialog();
+            self.applyIncIssue(
+                ko.unwrap(data.id),
+                ko.unwrap(data.count_edit),
+                ko.unwrap(worker.id),
+                false,
+                function (callBackData, method, responseData) {
+                    if (responseData.status.Code == 0) {
+                        ko.utils.arrayForEach(self.rootApiItems(), function (item) {
+                            if (item.id() == callBackData) {
+                                item.toolsinuse(responseData.response);
+                            }
+                        });
+                        self.onIssueCancelDialog();
+                    }
+                });
+        }
+    };
+
+    self.applyIncIssue = function (toolID, count, workerID, isincoming, onSuccess) {
+        call_ajax_to_service(
+                self.rootApi() + '/incissue',
+                "POST",
+                { id: toolID, count: count, isinc: isincoming, workerid: workerID },
+                toolID,
+                onSuccess);
+    }
+
+    self.onIncomingClick = function (item) {
+        self.needReloadInfo(true);
+        self.applyIncIssue(
+            ko.unwrap(item.id),
+            ko.unwrap(item.valueToIncoming),
+            ko.unwrap(item.worker.id),
+            true,
+            function (callBackData, method, responseData) {
+                if (responseData.status.Code == 0) {
+                    ko.utils.arrayForEach(self.infoItem().items, function (elem) {
+                        if (ko.unwrap(elem.worker.id) == ko.unwrap(item.worker.id)) {
+                            elem.count(ko.unwrap(elem.count) - ko.unwrap(item.valueToIncoming));
+                            elem.valueToIncoming(1);
                         }
                     });
-        } else {
-            data.worker_edit(null);
-        }
+                }
+            });
     };
 
     self.toolInfo = function (item) {
@@ -240,12 +253,18 @@
                 if (responseData.status.Code == 0) {
                     self.infoItem({
                         items: ko.utils.arrayMap(responseData.response, function (item) {
-                            return {
-                                worker: new Worker(item.worker),
-                                id: item.tool.id,
-                                name: item.tool.name,
-                                count: item.count
+                            function EditingObject() {
+                                var self = this;
+                                self.worker = new Worker(item.worker);
+                                self.id = item.tool.id;
+                                self.name = item.tool.name;
+                                self.count = ko.observable(item.count);
+                                self.valueToIncoming = ko.observable(1);
+                                self.canApply = ko.computed(function () {
+                                    return self.valueToIncoming() > 0 && self.valueToIncoming() <= ko.unwrap(self.count);
+                                });
                             }
+                            return new EditingObject();
                         }),
                         toolname: responseData.response[0].tool.name
                     });
@@ -255,16 +274,19 @@
             });
     };
 
-    self.onIncommingToolFromInfo = function (item) {
-        self.onInfoCancelDialog();
-        self.isincoming(true);
-        self.onIncIssueTool(item);
-    };
-
     self.onInfoCancelDialog = function () {
         self.onCancelDialog();
+        if (self.needReloadInfo() == true) {
+            self.parent.editedCategory().loadPartialData();
+            self.needReloadInfo(false);
+        }
         self.parent.editedCategory(null);
         self.showInfoDialog(false);
         self.infoItem(null);
     };
+
+    self.selectWorker = function (obj, worker) {
+        obj.worker_edit(worker.name);
+    };
 }
+
