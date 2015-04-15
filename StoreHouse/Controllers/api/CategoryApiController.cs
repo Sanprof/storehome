@@ -27,6 +27,8 @@ namespace StoreHouse.Controllers.api
                    expando.id = c.CategoryID;
                    expando.name = c.Name;
                    expando.description = c.Description;
+                   expando.cellfrom = c.CellFrom;
+                   expando.cellto = c.CellTo;
                    expando.toolpositions = c
                        .Tools
                        .Where(t => t.CategoryID == c.CategoryID && (!t.IsDeleted.HasValue || (t.IsDeleted.HasValue && !t.IsDeleted.Value)))
@@ -51,6 +53,8 @@ namespace StoreHouse.Controllers.api
             {
                 Name = data.name,
                 Description = data.description,
+                CellFrom = data.cellfrom,
+                CellTo = data.cellto,
                 IsDeleted = false,
                 CreationDate = DateTimeOffset.UtcNow.DateTime
             };
@@ -84,6 +88,8 @@ namespace StoreHouse.Controllers.api
             {
                 category.Name = data.name;
                 category.Description = data.description;
+                category.CellFrom = data.cellfrom;
+                category.CellTo = data.cellto;
             }
             store.SaveChanges();
             return Ok(ApiResponseManager.CreateResponse(new Status(status)));

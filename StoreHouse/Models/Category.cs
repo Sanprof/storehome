@@ -24,6 +24,8 @@ namespace StoreHouse.Models
         public string Description { get; set; }
         public bool IsDeleted { get; set; }
         public System.DateTime CreationDate { get; set; }
+        public int CellFrom { get; set; }
+        public int CellTo { get; set; }
     
         public virtual ICollection<Tool> Tools { get; set; }
     }

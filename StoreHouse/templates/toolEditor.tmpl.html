@@ -15,6 +15,20 @@
     </div>
     <div class="row bottom-buffer">
         <div class="col-xs-3">
+            <span class="pull-right label-form-control">№ ячейки:</span>
+        </div>
+        <div class="col-xs-9">
+            <div class="control-group" data-bind="css: {'has-error': cell_edit.hasError()}">
+                <div class="controls">
+                    <input data-bind="value: cell_edit, unumeric: cell_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите № ячейки', type: 'text'}" class="form-control center-block text-input" />
+                    <label class="control-label" data-bind="visible: cell_edit.hasError, text: cell_edit.validationMessage">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row bottom-buffer">
+        <div class="col-xs-3">
             <span class="pull-right label-form-control" data-bind="text: $data.isNew() ? 'Количество:':'Добавить:'"></span>
         </div>
         <div class="col-xs-9">

@@ -13,6 +13,8 @@
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="1000" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
+          <Property Name="CellFrom" Type="int" Nullable="false" />
+          <Property Name="CellTo" Type="int" Nullable="false" />
           <Property Name="CreationDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="DeletedTools">
@@ -42,6 +44,7 @@
           <Property Name="CategoryID" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Count" Type="int" Nullable="false" />
+          <Property Name="Cell" Type="int" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" />
           <Property Name="CreationDate" Type="datetime" Nullable="false" />
         </EntityType>
@@ -100,6 +103,7 @@
           <Property Name="ToolID" Type="int" Nullable="false" />
           <Property Name="WorkerID" Type="int" Nullable="false" />
           <Property Name="Count" Type="int" Nullable="false" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="192" Nullable="false" />
           <Property Name="WriteOffTime" Type="datetime" Nullable="false" />
         </EntityType>
         <Association Name="FK_DeletedTools_Tools">
@@ -318,6 +322,8 @@
           <NavigationProperty Name="Tools" Relationship="Self.FK_Tools_Categories" FromRole="Categories" ToRole="Tools" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
           <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CellFrom" Type="Int32" Nullable="false" />
+          <Property Name="CellTo" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="DeletedTool">
           <Key>
@@ -355,6 +361,7 @@
           <NavigationProperty Name="DeletedTools" Relationship="Self.FK_DeletedTools_Tools" FromRole="Tools" ToRole="DeletedTools" />
           <NavigationProperty Name="WriteOffTools" Relationship="Storage.Model.FK_WriteOffTools_Tools" FromRole="Tool" ToRole="WriteOffTool" />
           <NavigationProperty Name="ToolsUses" Relationship="Storage.Model.FK_ToolsUses_Tools" FromRole="Tool" ToRole="ToolsUs" />
+          <Property Name="Cell" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Worker">
           <Key>
@@ -490,7 +497,7 @@
           <Parameter Name="ToolID" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="Get_ToolsUsedByUser" ReturnType="Collection(Storage.Model.Get_ToolsUsedByUser_Result)">
-            <Parameter Name="WorkerID" Mode="In" Type="Int32" />
+          <Parameter Name="WorkerID" Mode="In" Type="Int32" />
           </FunctionImport>
           </EntityContainer>
         <EntityType Name="UserSession">
@@ -554,6 +561,7 @@
           <Property Name="WriteOffTime" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Tool" Relationship="Storage.Model.FK_WriteOffTools_Tools" FromRole="WriteOffTool" ToRole="Tool" />
           <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_WriteOffTools_Workers" FromRole="WriteOffTool" ToRole="Worker" />
+          <Property Name="Comment" Type="String" Nullable="false" MaxLength="192" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_WriteOffTools_Tools">
           <End Type="Storage.Model.Tool" Role="Tool" Multiplicity="1" />
@@ -653,6 +661,8 @@
           <EntitySetMapping Name="Categories">
             <EntityTypeMapping TypeName="Storage.Model.Category">
               <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="CellTo" ColumnName="CellTo" />
+                <ScalarProperty Name="CellFrom" ColumnName="CellFrom" />
                 <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
@@ -685,6 +695,7 @@
           <EntitySetMapping Name="Tools">
             <EntityTypeMapping TypeName="Storage.Model.Tool">
               <MappingFragment StoreEntitySet="Tools">
+                <ScalarProperty Name="Cell" ColumnName="Cell" />
                 <ScalarProperty Name="ToolID" ColumnName="ToolID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -739,6 +750,7 @@
           <EntitySetMapping Name="WriteOffTools">
             <EntityTypeMapping TypeName="Storage.Model.WriteOffTool">
               <MappingFragment StoreEntitySet="WriteOffTools">
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
                 <ScalarProperty Name="WriteOffTime" ColumnName="WriteOffTime" />
                 <ScalarProperty Name="Count" ColumnName="Count" />
                 <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />

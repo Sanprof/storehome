@@ -3,7 +3,7 @@
 
     Manager.call(self);
 
-    self.headerName("Интсрументы");
+    self.headerName("Инcтрументы");
     self.iconCSS("fa-gears");
     self.templateName = 'tools';
     self.flatTools = ko.observable(false);

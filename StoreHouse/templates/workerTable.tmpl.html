@@ -59,13 +59,12 @@
             </td>
             <td class="text-center">
                 <span data-bind="html: toolscount, attr: {title: toolscount}" class="span-with-info"></span>
-                <i class="fa fa-info-circle pull-right text-info" style="margin-top: 3px;" data-bind="click: toolscount() > 0 ? $parent.userInfoClick : null, css: {'disabled': toolscount() == 0, 'clicable': toolscount()>0}"></i>
+                <i class="fa fa-sign-in pull-right text-success" style="margin-top: 3px;" data-bind="click: toolscount() > 0 ? $parent.userInfoClick : null, css: {'disabled': toolscount() == 0, 'clicable': toolscount()>0}"></i>
             </td>
             <td class="text-center">
                 <div class="dropdown">
                     <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'position_menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu" data-bind="attr: {'aria-labelledby': 'position_menu' + $index()}">
-                        <li class="clicable" data-bind="click: $parent.onIssueTool"><a><i class="fa fa-sign-out text-danger text-right-icon"></i>Выдать</a></li>
                         <li class="clicable" data-bind="click: $parent.editClick"><a><i class="fa fa-edit text-primary text-right-icon"></i>Изменить</a></li>
                         <li class="clicable" data-bind="click: id() > 1 ? $parent.onDeleteWorker: null, visible: id() > 1"><a><i class="fa fa-trash-o text-danger text-right-icon"></i>Удалить</a></li>
                     </ul>

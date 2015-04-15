@@ -19,6 +19,7 @@ namespace StoreHouse.Models
         public int WorkerID { get; set; }
         public int Count { get; set; }
         public System.DateTime WriteOffTime { get; set; }
+        public string Comment { get; set; }
     
         public virtual Tool Tool { get; set; }
         public virtual Worker Worker { get; set; }

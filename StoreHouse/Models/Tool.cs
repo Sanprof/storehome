@@ -27,6 +27,7 @@ namespace StoreHouse.Models
         public int Count { get; set; }
         public Nullable<bool> IsDeleted { get; set; }
         public System.DateTime CreationDate { get; set; }
+        public int Cell { get; set; }
     
         public virtual Category Category { get; set; }
         public virtual ICollection<DeletedTool> DeletedTools { get; set; }

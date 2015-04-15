@@ -41,6 +41,7 @@ namespace StoreHouse.Controllers.api
                     dynamic expando = new ExpandoObject();
                     expando.id = t.ToolID;
                     expando.name = t.Name;
+                    expando.cell = t.Cell;
                     expando.toolscount = t.Count;
                     expando.toolsinuse = Math.Abs(ToolsHelper.ToolStatByToolID(store, t.ToolID));
                     return expando;
@@ -94,6 +95,7 @@ namespace StoreHouse.Controllers.api
             {
                 Name = data.name,
                 CategoryID = Convert.ToInt32(data.category),
+                Cell = Convert.ToInt32(data.cell),
                 Count = Convert.ToInt32(data.count),
                 IsDeleted = false,
                 CreationDate = DateTimeOffset.UtcNow.DateTime
@@ -123,6 +125,7 @@ namespace StoreHouse.Controllers.api
             if (dbObj != null)
             {
                 dbObj.Name = data.name;
+                dbObj.Cell = data.cell;
                 dbObj.Count += data.count;
                 store.SaveChanges();
                 response = new
@@ -130,7 +133,7 @@ namespace StoreHouse.Controllers.api
                     id = dbObj.ToolID,
                     name = dbObj.Name,
                     toolscount = dbObj.Count,
-                    toolsinuse = 0,
+                    toolsinuse = Math.Abs(ToolsHelper.ToolStatByToolID(store, dbObj.ToolID)),
                 };
             }
             else
@@ -193,7 +196,7 @@ namespace StoreHouse.Controllers.api
                         .ToList();
                     var all = allTools.Count > 0 ? allTools.Sum() : 0;
                     int inuseCount = Math.Abs(ToolsHelper.ToolStatByToolID(store, data.id));
-                    if (data.count < all - inuseCount)
+                    if (data.count <= all - inuseCount)
                     {
                         store
                             .WriteOffTools
@@ -202,6 +205,7 @@ namespace StoreHouse.Controllers.api
                                 ToolID = data.id,
                                 WorkerID = store.Users.FirstOrDefault(u => u.UserID == userID.Value).WorkerID,
                                 Count = data.count,
+                                Comment = data.comment,
                                 WriteOffTime = DateTimeOffset.UtcNow.DateTime
                             });
                         var tool = store

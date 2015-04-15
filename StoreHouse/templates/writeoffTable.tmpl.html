@@ -22,6 +22,9 @@
             <th>
                 <span>Работник</span>
             </th>
+            <th>
+                <span>Причина</span>
+            </th>
         </tr>
     </thead>
     <!-- ko if: rootApiItems().length > 0 -->
@@ -39,6 +42,9 @@
             </td>
             <td>
                 <span data-bind="text: worker().lastname, attr:{title: worker().fullName()}"></span>
+            </td>
+            <td>
+                <span data-bind="html: comment, attr: {title: comment}"></span>
             </td>
         </tr>
         <!-- /ko -->

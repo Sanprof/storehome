@@ -64,3 +64,20 @@ ko.extenders.datetime = function (target, overrideMessage) {
         return isNaN(date);
     }
 };
+
+ko.extenders.minMax = function (target, minMaxValues) {
+    target.hasError = ko.observable(false);
+    target.validationMessage = ko.observable();
+    target.min = ko.observable(minMaxValues.min);
+    target.max = ko.observable(minMaxValues.max);
+
+    function validate(newValue) {
+        var hasError = !($.trim(newValue)) || ($.trim(newValue) && (newValue < ko.unwrap(target.min) || newValue > ko.unwrap(target.max)));
+        target.hasError(hasError);
+        target.validationMessage(!hasError ? "" : "Значение должно быть в пределах от " + ko.unwrap(target.min) + " до " + ko.unwrap(target.max));
+    };
+
+    validate(target());
+    target.subscribe(validate);
+    return target;
+};

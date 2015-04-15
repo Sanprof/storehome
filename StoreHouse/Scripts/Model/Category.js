@@ -3,6 +3,8 @@
     Manager.call(self);
     PartialListManager.call(self);
     DescrName.call(self);
+    self.cellfrom = ko.observable();
+    self.cellto = ko.observable();
 
     self.showWriteOffDialog = ko.observable(false);
     self.writeoffItem = ko.observable();
@@ -28,6 +30,30 @@
         self.init(data);
     }
 
+    var baseStartEdit = self.startEdit;
+    self.startEdit = function () {
+        baseStartEdit();
+        self.cellfrom_edit = ko.observable(ko.unwrap(self.cellfrom)).extend({ required: "Обязательно" });
+        self.cellfrom_edit.hasError(false);
+        self.cellto_edit = ko.observable(ko.unwrap(self.cellto)).extend({ required: "Обязательно" });
+        self.cellto_edit.hasError(false);
+    };
+
+    var baseEndEdit = self.endEdit;
+    self.endEdit = function () {
+        baseEndEdit();
+        self.cellfrom(ko.unwrap(self.cellfrom_edit));
+        self.cellto(ko.unwrap(self.cellto_edit));
+    };
+
+    var baseToJSON = self.toJSON;
+    self.toJSON = function () {
+        var obj = baseToJSON();
+        obj.cellfrom = ko.unwrap(self.cellfrom);
+        obj.cellto = ko.unwrap(self.cellto);
+        return obj;
+    };
+
     self.recalc = ko.computed(function () {
         if (self.rootApiItems().length > 0) {
             self.toolpositions(self.rootApiItems().length);
@@ -49,6 +75,8 @@
 
     self.addToolClick = function () {
         var tool = new Tool({ name: '', toolscount: '' });
+        tool.min(ko.unwrap(self.cellfrom));
+        tool.max(ko.unwrap(self.cellto));
         self.editClick(tool);
     };
 
@@ -109,7 +137,13 @@
 
     self.onWriteOffTool = function (item) {
         self.parent.editedCategory(self);
-        self.writeoffItem({ id: item.id, name: item.name, count_edit: ko.observable(1).extend({ required: "Количество обязательно" }) });
+        self.writeoffItem({
+            id: item.id,
+            name: item.name,
+            count_edit: ko.observable(1).extend({ minMax: { min: 1, max: (item.toolscount() - item.toolsinuse()) } }),
+            comment_edit: ko.observable().extend({ required: "Причина обязательно" })
+        });
+        self.writeoffItem().comment_edit.hasError(false);
         self.showWriteOffDialog(true);
     };
 
@@ -123,16 +157,18 @@
     self.onWriteOffApplyDialog = function (data) {
         data = data.object;
         var item = 'count_edit';
-        if (item in self && 'hasError' in self[item]) {
-            self[item].valueHasMutated();
-            if (self[item].hasError()) {
-                return;
+        for (var item in data) {
+            if ('hasError' in data[item]) {
+                data[item].valueHasMutated();
+                if (data[item].hasError()) {
+                    return;
+                }
             }
         }
         call_ajax_to_service(
                         self.rootApi() + '/writeoff',
                         "POST",
-                        { id: data.id(), count: data.count_edit() },
+                        { id: data.id(), count: data.count_edit(), comment: data.comment_edit() },
                         data.id(),
                         function (callBackData, method, responseData) {
                             if (responseData.status.Code == 0) {
@@ -288,5 +324,14 @@
     self.selectWorker = function (obj, worker) {
         obj.worker_edit(worker.name);
     };
+
+    self.setToolsMinMax = function (data) {
+        ko.utils.arrayForEach(self.rootApiItems(), function (item) {
+            item.min(ko.unwrap(self.cellfrom));
+            item.max(ko.unwrap(self.cellto));
+        });
+    }
+
+    self.subscribe("dataloadedevent", self.setToolsMinMax);
 }
 

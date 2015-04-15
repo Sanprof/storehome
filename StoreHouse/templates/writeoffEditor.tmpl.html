@@ -12,3 +12,17 @@
         </div>
     </div>
 </div>
+<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Причина:</span>
+    </div>
+    <div class="col-xs-9">
+        <div class="control-group" data-bind="css: {'has-error': comment_edit.hasError()}">
+            <div class="controls">
+                <input data-bind="value: comment_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите причину списания', type: 'text'}" class="form-control center-block text-input" />
+                <label class="control-label" data-bind="visible: comment_edit.hasError, text: comment_edit.validationMessage">
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

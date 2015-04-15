@@ -27,4 +27,33 @@
             </div>
         </div>
     </div>
+    <div class="row bottom-buffer">
+        <div class="col-xs-3">
+            <span class="pull-right label-form-control">Ячейки:</span>
+        </div>
+        <div class="col-xs-3 col-xs-offset-1">
+            <div class="control-group" data-bind="css: {'has-error': cellfrom_edit.hasError()}">
+                <div class="controls">
+                    <div class="input-group">
+                        <span class="input-group-addon">C</span>
+                        <input data-bind="value: cellfrom_edit, unumeric: cellfrom_edit, valueUpdate : 'afterkeydown', attr: {placeholder: '0', type: 'text'}" class="form-control center-block text-input" />
+                    </div>
+                    <label class="control-label" data-bind="visible: cellfrom_edit.hasError, text: cellfrom_edit.validationMessage">
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-3 col-xs-offset-1">
+            <div class="control-group" data-bind="css: {'has-error': cellto_edit.hasError()}">
+                <div class="controls">
+                    <div class="input-group">
+                        <span class="input-group-addon">По</span>
+                        <input data-bind="value: cellto_edit, unumeric: cellto_edit, valueUpdate : 'afterkeydown', attr: {placeholder: '0', type: 'text'}" class="form-control center-block text-input" />
+                    </div>
+                    <label class="control-label" data-bind="visible: cellto_edit.hasError, text: cellto_edit.validationMessage">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

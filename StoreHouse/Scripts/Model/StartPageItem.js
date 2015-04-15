@@ -6,6 +6,7 @@
     self.count = ko.observable();
     self.isinc = ko.observable();
     self.time = ko.observable();
+    self.comment = ko.observable();
     self.worker = ko.observable();
 
     if (data) {

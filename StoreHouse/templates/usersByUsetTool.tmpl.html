@@ -5,7 +5,7 @@
                 Работник
             </th>
             <th>
-                Количество
+                Выдано
             </th>
             <th>
                 Принять
@@ -22,7 +22,7 @@
             </td>
             <td class="text-center text-success" width="116">
                 <div class="input-group" style="width: 100px;">
-                    <input type="text" class="form-control text-center" data-bind="unumeric: valueToIncoming, valueUpdate: 'afterkeydown', value: valueToIncoming" />
+                    <input type="text" class="form-control text-center input-sm" data-bind="unumeric: valueToIncoming, valueUpdate: 'afterkeydown', value: valueToIncoming" />
                     <span class="input-group-addon" data-bind="css: {'disabled': !canApply(), 'clicable': canApply()}, click: canApply() ? $parents[3].onIncomingClick : null"><i class="fa fa-sign-in text-success"></i></span>
                 </div>
             </td>

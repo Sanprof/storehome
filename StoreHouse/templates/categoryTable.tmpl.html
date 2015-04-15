@@ -12,6 +12,9 @@
                                                     click: onChangeSortable.bind($data, 'name')">
                 <span>Название</span>
             </th>
+            <th>
+                <span>Ячейки</span>
+            </th>
             <th class="clicable" data-bind="css: {'sorting': sortField() != 'toolpositions',
                                                     'sorting_asc': sortField()=='toolpositions' && sortASC()==true,
                                                     'sorting_desc': sortField()=='toolpositions' && sortASC()==false},
@@ -37,6 +40,9 @@
                 <i class="fa text-right-icon" data-bind="css: {'fa-chevron-down': expanded, 'fa-chevron-right': !expanded()}"></i><span data-bind="html: name, attr: {title: description}"></span>
             </td>
             <td class="text-center">
+                <span data-bind="text: cellfrom() + ' - ' + cellto()"></span>
+            </td>
+            <td class="text-center">
                 <span data-bind="text: toolpositions, attr: {title: toolpositions}"></span>
             </td>
             <td class="text-center">
@@ -47,6 +53,7 @@
                     <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'category_menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
                     <ul class="dropdown-menu dropdown-menu-right" role="menu" data-bind="attr: {'aria-labelledby': 'category_menu' + $index()}">
                         <li class="clicable" data-bind="click: addToolClick"><a><i class="fa fa-plus-square text-success text-right-icon"></i>Добавить инструмент</a></li>
+                        <li class="divider s-divider"></li>
                         <li class="clicable" data-bind="click: $parent.editClick"><a><i class="fa fa-edit text-primary text-right-icon"></i>Изменить</a></li>
                         <li class="clicable" data-bind="click: $parent.onDeleteCategory"><a><i class="fa fa-trash-o text-danger text-right-icon"></i>Удалить</a></li>
                     </ul>
@@ -65,10 +72,10 @@
                     <thead>
                         <tr>
                             <th>
-                                <span>№ ячейки</span>
+                                <span>Название</span>
                             </th>
                             <th>
-                                <span>Название</span>
+                                <span>№ ячейки</span>
                             </th>
                             <th>
                                 <span>Количество</span>
@@ -84,18 +91,19 @@
                     <!-- ko if: rootApiItems().length > 0 -->
                     <tbody data-bind="foreach: rootApiItems">
                         <tr>
+
                             <td>
                                 <span data-bind="html: name, attr:{title: name}"></span>
                             </td>
-                            <td>
-                                <span data-bind="html: name, attr:{title: name}"></span>
+                            <td class="text-center">
+                                <span data-bind="html: cell, attr:{title: cell}"></span>
                             </td>
                             <td class="text-center">
                                 <span data-bind="html: toolscount, attr:{title: toolscount}"></span>
                             </td>
                             <td class="text-center" data-bind="click: toolsinuse() > 0 ? $parent.toolInfo : null, css: {'clicable': toolsinuse()>0}">
                                 <span data-bind="html: toolsinuse, attr:{title: toolsinuse}" class="span-with-info"></span>
-                                <i class="fa fa-info-circle pull-right text-info" style="margin-top: 3px;" data-bind="css: {'disabled': toolsinuse() == 0}"></i>
+                                <i class="fa fa-sign-in pull-right text-success" style="margin-top: 3px;" data-bind="css: {'disabled': toolsinuse() == 0}" title="Принять"></i>
                             </td>
                             <td class="text-center">
                                 <div class="dropdown">
@@ -124,6 +132,7 @@
                 <!-- /ko -->
             </td>
         </tr>
+        <tr style="display:none;"><td></td></tr>
         <!-- /ko -->
     </tbody>
     <!-- /ko -->
@@ -218,7 +227,7 @@
                     isNew: false,
                     customCancelText: 'Закрыть',
                     customApplyText: null,
-                    title: 'Кому выдано',
+                    title: 'Прием инструментов',
                     subtitle: ko.unwrap($data.toolname),
                     editor: 'usersByUsetTool',
                     object: $data.items,

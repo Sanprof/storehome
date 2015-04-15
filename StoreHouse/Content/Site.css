@@ -108,3 +108,7 @@ span.disabled > i, i.disabled {
     font-weight: bold;
     font-size: 120%;
 }
+
+.s-divider{
+    margin: 4px 0;
+}

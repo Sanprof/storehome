@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace StoreHouse.Controllers.api
@@ -15,19 +13,32 @@ namespace StoreHouse.Controllers.api
             return store
                 .WriteOffTools
                 .AsEnumerable()
-                .Select(w => new
+                .Select(w =>
                 {
-                    name = w.Tool.Name,
-                    count = w.Count,
-                    time = w.WriteOffTime.ToString("dd.MM.yyyyTHH:mm"),
-                    worker = new
-                    {
-                        lastname = w.Worker.LastName,
-                        firstname = w.Worker.FirstName,
-                        middlename = w.Worker.MiddleName,
-                    }
+                    dynamic expando = new ExpandoObject();
+                    expando.name = w.Tool.Name;
+                    expando.count = w.Count;
+                    expando.time = w.WriteOffTime;
+                    expando.comment = w.Comment;
+                    expando.worker = new ExpandoObject();
+                    expando.worker.lastname = w.Worker.LastName;
+                    expando.worker.firstname = w.Worker.FirstName;
+                    expando.worker.middlename = w.Worker.MiddleName;
+                    return expando;
                 })
                 .ToList<object>();
+        }
+
+        protected override object GetAdditionDataAfterSorting(dynamic response, dynamic data)
+        {
+            if (response != null)
+            {
+                foreach (var item in response)
+                {
+                    item.time = item.time.ToString("dd.MM.yyyyTHH:mm");
+                }
+            }
+            return response;
         }
     }
 }

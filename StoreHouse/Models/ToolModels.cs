@@ -15,11 +15,15 @@ namespace StoreHouse.Models
         public int id { get; set; }
         public string name { get; set; }
         public int count { get; set; }
+
+        public int cell { get; set; }
     }
 
     public class WriteOffModel : SimpleDeleteModel
     {
         public int count { get; set; }
+
+        public string comment { get; set; }
     }
 
     public class IncIssueModel : TokenBase
