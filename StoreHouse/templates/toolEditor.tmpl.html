@@ -20,7 +20,15 @@
         <div class="col-xs-9">
             <div class="control-group" data-bind="css: {'has-error': cell_edit.hasError()}">
                 <div class="controls">
-                    <input data-bind="value: cell_edit, unumeric: cell_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите № ячейки', type: 'text'}" class="form-control center-block text-input" />
+                    <div class="input-group">
+                        <input data-bind="value: cell_edit, unumeric: cell_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите № ячейки', type: 'text'}" class="form-control center-block text-input" />
+                        <div class="input-group-btn">
+                            <span class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-caret-down"></i></span>
+                            <ul class="dropdown-menu dropdown-menu-right scrollable-menu" role="menu" data-bind="foreach: $parents[1].cellArray()">
+                                <li><a href="javascript:void(0)" data-bind="click: $parents[2].onCellSelectFromList"><span data-bind="text: $data"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
                     <label class="control-label" data-bind="visible: cell_edit.hasError, text: cell_edit.validationMessage">
                     </label>
                 </div>
@@ -39,6 +47,27 @@
                     </label>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <h5 class="sub-header"><span style="padding-left: 27%;"><i class="fa fa-signal"></i> Установить пределы</span></h5>
+        </div>
+    </div>
+    <div class="row bottom-buffer">
+        <div class="col-xs-3">
+            <span class="pull-right label-form-control">Мало:</span>
+        </div>
+        <div class="col-xs-9">
+            <input data-bind="value: low_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Оставьте пустым если не требуется', type: 'text'}" class="form-control center-block text-input" />
+        </div>
+    </div>
+    <div class="row bottom-buffer">
+        <div class="col-xs-3">
+            <span class="pull-right label-form-control">Очень мало:</span>
+        </div>
+        <div class="col-xs-9">
+            <input data-bind="value: lower_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Оставьте пустым если не требуется', type: 'text'}" class="form-control center-block text-input" />
         </div>
     </div>
 </div>

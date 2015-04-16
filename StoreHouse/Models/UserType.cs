@@ -12,19 +12,19 @@ namespace StoreHouse.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class UserType
     {
-        public int UserID { get; set; }
-        public int WorkerID { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public int Salt { get; set; }
-        public Nullable<bool> IsDeleted { get; set; }
-        public System.DateTime CreatedDate { get; set; }
-        public string UserName { get; set; }
-        public int UserTypeID { get; set; }
+        public UserType()
+        {
+            this.Users = new HashSet<User>();
+        }
     
-        public virtual Worker Worker { get; set; }
-        public virtual UserType UserType { get; set; }
+        public int UserTypeID { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int AccessLevel { get; set; }
+        public System.DateTime CreationDate { get; set; }
+    
+        public virtual ICollection<User> Users { get; set; }
     }
 }

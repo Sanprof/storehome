@@ -46,6 +46,7 @@ namespace StoreHouse.Controllers
                         response = new ExpandoObject();
                         response.rememberme = user.rememberme;
                         response.username = dbuser.UserName;
+                        response.accesslevel = dbuser.UserType.AccessLevel;
                     }
                     else
                         status = Code.LoginFailed;
@@ -81,7 +82,7 @@ namespace StoreHouse.Controllers
         [Route("~/passrecover")]
         public async Task<HttpResponseMessage> PasswordRecovery([FromBody] RecoveryPasswordModel user)
         {
-            
+
             var status = default(Code);
             var dbuser = store.Users.FirstOrDefault(u => u.Email.ToLower().CompareTo(user.email.ToLower()) == 0);
             dynamic response = null;

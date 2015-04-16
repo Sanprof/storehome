@@ -45,6 +45,8 @@
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Count" Type="int" Nullable="false" />
           <Property Name="Cell" Type="int" Nullable="false" />
+          <Property Name="LowCount" Type="int" />
+          <Property Name="LowerCount" Type="int" />
           <Property Name="IsDeleted" Type="bit" />
           <Property Name="CreationDate" Type="datetime" Nullable="false" />
         </EntityType>
@@ -64,13 +66,14 @@
             <PropertyRef Name="UserID" />
           </Key>
           <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserTypeID" Type="int" Nullable="false" />
           <Property Name="WorkerID" Type="int" Nullable="false" />
-          <Property Name="Email" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="64" Nullable="false" />
           <Property Name="Password" Type="varchar" MaxLength="40" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Salt" Type="int" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
-          <Property Name="UserName" Type="nvarchar" MaxLength="64" Nullable="false" />
         </EntityType>
         <EntityType Name="UserSession">
           <Key>
@@ -82,6 +85,16 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="Expired" Type="datetime" Nullable="false" />
           <Property Name="RememberMe" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserType">
+          <Key>
+            <PropertyRef Name="UserTypeID" />
+          </Key>
+          <Property Name="UserTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="1000" />
+          <Property Name="AccessLevel" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Workers">
           <Key>
@@ -178,6 +191,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_UserType">
+          <End Role="UserType" Type="Self.UserType" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserType">
+              <PropertyRef Name="UserTypeID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="UserTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_User_Workers">
           <End Role="Workers" Type="Self.Workers" Multiplicity="1" />
           <End Role="User" Type="Self.User" Multiplicity="*" />
@@ -261,6 +286,7 @@
           <EntitySet Name="ToolsUses" EntityType="Self.ToolsUses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSession" EntityType="Self.UserSession" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Workers" EntityType="Self.Workers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WriteOffTools" EntityType="Self.WriteOffTools" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_DeletedTools_Tools" Association="Self.FK_DeletedTools_Tools">
@@ -286,6 +312,10 @@
           <AssociationSet Name="FK_ToolsUses_Worker" Association="Self.FK_ToolsUses_Worker">
             <End Role="Workers" EntitySet="Workers" />
             <End Role="ToolsUses" EntitySet="ToolsUses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_User_UserType" Association="Self.FK_User_UserType">
+            <End Role="UserType" EntitySet="UserType" />
+            <End Role="User" EntitySet="User" />
           </AssociationSet>
           <AssociationSet Name="FK_User_Workers" Association="Self.FK_User_Workers">
             <End Role="Workers" EntitySet="Workers" />
@@ -362,6 +392,8 @@
           <NavigationProperty Name="WriteOffTools" Relationship="Storage.Model.FK_WriteOffTools_Tools" FromRole="Tool" ToRole="WriteOffTool" />
           <NavigationProperty Name="ToolsUses" Relationship="Storage.Model.FK_ToolsUses_Tools" FromRole="Tool" ToRole="ToolsUs" />
           <Property Name="Cell" Type="Int32" Nullable="false" />
+          <Property Name="LowCount" Type="Int32" />
+          <Property Name="LowerCount" Type="Int32" />
         </EntityType>
         <EntityType Name="Worker">
           <Key>
@@ -499,6 +531,11 @@
           <FunctionImport Name="Get_ToolsUsedByUser" ReturnType="Collection(Storage.Model.Get_ToolsUsedByUser_Result)">
           <Parameter Name="WorkerID" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="UserTypes" EntityType="Storage.Model.UserType" />
+          <AssociationSet Name="FK_User_UserType" Association="Storage.Model.FK_User_UserType">
+            <End Role="UserType" EntitySet="UserTypes" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="UserSession">
           <Key>
@@ -537,6 +574,8 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_User_Workers" FromRole="User" ToRole="Worker" />
           <Property Name="UserName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="UserTypeID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="UserType" Relationship="Storage.Model.FK_User_UserType" FromRole="User" ToRole="UserType" />
         </EntityType>
         <Association Name="FK_User_Workers">
           <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="1" />
@@ -652,6 +691,29 @@
           <Property Type="Int32" Name="WorkerID" Nullable="false" />
           <Property Type="Int32" Name="Count" Nullable="true" />
         </ComplexType>
+        <EntityType Name="UserType">
+          <Key>
+            <PropertyRef Name="UserTypeID" />
+          </Key>
+          <Property Name="UserTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="AccessLevel" Type="Int32" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Users" Relationship="Storage.Model.FK_User_UserType" FromRole="UserType" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_User_UserType">
+          <End Type="Storage.Model.UserType" Role="UserType" Multiplicity="1" />
+          <End Type="Storage.Model.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserType">
+              <PropertyRef Name="UserTypeID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="UserTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -695,6 +757,8 @@
           <EntitySetMapping Name="Tools">
             <EntityTypeMapping TypeName="Storage.Model.Tool">
               <MappingFragment StoreEntitySet="Tools">
+                <ScalarProperty Name="LowerCount" ColumnName="LowerCount" />
+                <ScalarProperty Name="LowCount" ColumnName="LowCount" />
                 <ScalarProperty Name="Cell" ColumnName="Cell" />
                 <ScalarProperty Name="ToolID" ColumnName="ToolID" />
                 <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
@@ -736,6 +800,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="Storage.Model.User">
               <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="UserTypeID" ColumnName="UserTypeID" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
@@ -794,6 +859,17 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="UserTypes">
+            <EntityTypeMapping TypeName="Storage.Model.UserType">
+              <MappingFragment StoreEntitySet="UserType">
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="AccessLevel" ColumnName="AccessLevel" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserTypeID" ColumnName="UserTypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

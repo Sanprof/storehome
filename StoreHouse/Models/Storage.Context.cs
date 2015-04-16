@@ -36,6 +36,7 @@ namespace StoreHouse.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<WriteOffTool> WriteOffTools { get; set; }
         public virtual DbSet<ToolsUs> ToolsUses { get; set; }
+        public virtual DbSet<UserType> UserTypes { get; set; }
     
         public virtual ObjectResult<Nullable<int>> DeleteUserSessionsByToken(string token)
         {

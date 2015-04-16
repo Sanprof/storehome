@@ -58,6 +58,8 @@ namespace StoreHouse
                 "~/Scripts/model/PositionManager.js",
                 "~/Scripts/model/Position.js",
                 "~/Scripts/model/WriteOffManager.js",
+                "~/Scripts/model/AccountsManager.js",
+                "~/Scripts/model/Accounts.js",
                 "~/Scripts/model/LoginUser.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/auth").Include(

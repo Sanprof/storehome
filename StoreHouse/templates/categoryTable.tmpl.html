@@ -90,8 +90,7 @@
                     </thead>
                     <!-- ko if: rootApiItems().length > 0 -->
                     <tbody data-bind="foreach: rootApiItems">
-                        <tr>
-
+                        <tr data-bind="css: limitsCss">
                             <td>
                                 <span data-bind="html: name, attr:{title: name}"></span>
                             </td>

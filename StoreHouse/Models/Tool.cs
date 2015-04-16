@@ -28,6 +28,8 @@ namespace StoreHouse.Models
         public Nullable<bool> IsDeleted { get; set; }
         public System.DateTime CreationDate { get; set; }
         public int Cell { get; set; }
+        public Nullable<int> LowCount { get; set; }
+        public Nullable<int> LowerCount { get; set; }
     
         public virtual Category Category { get; set; }
         public virtual ICollection<DeletedTool> DeletedTools { get; set; }

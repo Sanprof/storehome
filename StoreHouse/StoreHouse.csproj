@@ -154,6 +154,7 @@
     <Compile Include="Common\AuthenticateAttribute.cs" />
     <Compile Include="Common\Code.cs" />
     <Compile Include="Common\CustomDirectRouteProvider.cs" />
+    <Compile Include="Common\ExpandoHelper.cs" />
     <Compile Include="Common\ExternalErrorHandlerAttribute.cs" />
     <Compile Include="Common\HttpGetTypeAttribute.cs" />
     <Compile Include="Common\ModelValidationAttribute.cs" />
@@ -225,6 +226,9 @@
     </Compile>
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\UserSession.cs">
+      <DependentUpon>Storage.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\UserType.cs">
       <DependentUpon>Storage.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Validator.cs" />
@@ -306,6 +310,8 @@
     <Content Include="Scripts\knockout\knockout.validation.js" />
     <Content Include="Scripts\knockout\koExternalTemplateEngine_all.js" />
     <Content Include="Scripts\knockout\pager.js" />
+    <Content Include="Scripts\Model\Account.js" />
+    <Content Include="Scripts\Model\AccountsManager.js" />
     <Content Include="Scripts\Model\Alerts.js" />
     <Content Include="Scripts\Model\BaseObject.js" />
     <Content Include="Scripts\bootstrap\bootstrap3-typeahead.js" />
@@ -341,6 +347,7 @@
     <Content Include="Scripts\Model\Worker.js" />
     <Content Include="Scripts\Model\WorkerManager.js" />
     <Content Include="Scripts\Model\WriteOffManager.js" />
+    <Content Include="templates\accountsTable.tmpl.html" />
     <Content Include="templates\categoryEditor.tmpl.html" />
     <Content Include="templates\issuedincomingEditor.tmpl.html" />
     <Content Include="templates\positions.tmpl.html" />
@@ -360,6 +367,7 @@
     <Content Include="templates\workers.tmpl.html" />
     <Content Include="templates\workerTable.tmpl.html" />
     <Content Include="templates\writeoffEditor.tmpl.html" />
+    <Content Include="templates\accounts.tmpl.html" />
     <Content Include="templates\writeoffs.tmpl.html" />
     <Content Include="templates\writeoffTable.tmpl.html" />
     <Content Include="Web.config">

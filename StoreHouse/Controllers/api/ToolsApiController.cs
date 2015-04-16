@@ -1,4 +1,5 @@
-﻿using StoreHouse.Common;
+﻿using SLICKernel.Common;
+using StoreHouse.Common;
 using StoreHouse.Models;
 using StoreHouse.Models.Constants;
 using System;
@@ -42,6 +43,8 @@ namespace StoreHouse.Controllers.api
                     expando.id = t.ToolID;
                     expando.name = t.Name;
                     expando.cell = t.Cell;
+                    expando.low = t.LowCount;
+                    expando.lower = t.LowerCount;
                     expando.toolscount = t.Count;
                     expando.toolsinuse = Math.Abs(ToolsHelper.ToolStatByToolID(store, t.ToolID));
                     return expando;
@@ -100,6 +103,10 @@ namespace StoreHouse.Controllers.api
                 IsDeleted = false,
                 CreationDate = DateTimeOffset.UtcNow.DateTime
             };
+            if (ExpandoHelper.PropertyExists(data, "low"))
+                dbObj.LowCount = (int)data.low;
+            if (ExpandoHelper.PropertyExists(data, "lower"))
+                dbObj.LowerCount = (int)data.lower;
             store.Tools.Add(dbObj);
             store.SaveChanges();
             response = new
@@ -127,6 +134,10 @@ namespace StoreHouse.Controllers.api
                 dbObj.Name = data.name;
                 dbObj.Cell = data.cell;
                 dbObj.Count += data.count;
+                if (data.low.HasValue)
+                    dbObj.LowCount = data.low.Value;
+                if (data.lower.HasValue)
+                    dbObj.LowerCount = data.lower.Value;
                 store.SaveChanges();
                 response = new
                 {

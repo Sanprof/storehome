@@ -15,7 +15,8 @@ namespace StoreHouse.Models
         public int id { get; set; }
         public string name { get; set; }
         public int count { get; set; }
-
+        public int? low { get; set; }
+        public int? lower { get; set; }
         public int cell { get; set; }
     }
 

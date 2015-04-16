@@ -109,6 +109,24 @@ span.disabled > i, i.disabled {
     font-size: 120%;
 }
 
-.s-divider{
+.s-divider {
     margin: 4px 0;
+}
+
+.sub-header {
+    padding-bottom: 4px;
+    margin: 10px 0 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.low {
+    border-color: #f0ad4e;
+    color: #fff;
+    background-color: #f0ad4e !important;
+}
+
+.lower {
+    border-color: #d9534f;
+    color: #fff;
+    background-color: #d9534f !important;
 }
