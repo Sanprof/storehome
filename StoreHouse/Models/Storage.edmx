@@ -5,6 +5,18 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="Storage.Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Audit">
+          <Key>
+            <PropertyRef Name="AuditID" />
+          </Key>
+          <Property Name="AuditID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WorkerID" Type="int" Nullable="false" />
+          <Property Name="ToolID" Type="int" Nullable="false" />
+          <Property Name="Action" Type="int" Nullable="false" />
+          <Property Name="Count" Type="int" Nullable="false" />
+          <Property Name="Readed" Type="bit" Nullable="false" />
+          <Property Name="CreationDate" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="Categories">
           <Key>
             <PropertyRef Name="CategoryID" />
@@ -45,10 +57,10 @@
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Count" Type="int" Nullable="false" />
           <Property Name="Cell" Type="int" Nullable="false" />
-          <Property Name="LowCount" Type="int" />
-          <Property Name="LowerCount" Type="int" />
           <Property Name="IsDeleted" Type="bit" />
           <Property Name="CreationDate" Type="datetime" Nullable="false" />
+          <Property Name="LowCount" Type="int" />
+          <Property Name="LowerCount" Type="int" />
         </EntityType>
         <EntityType Name="ToolsUses">
           <Key>
@@ -66,11 +78,11 @@
             <PropertyRef Name="UserID" />
           </Key>
           <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserTypeID" Type="int" Nullable="false" />
           <Property Name="WorkerID" Type="int" Nullable="false" />
+          <Property Name="UserTypeID" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="64" Nullable="false" />
-          <Property Name="Password" Type="varchar" MaxLength="40" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="40" Nullable="false" />
           <Property Name="Salt" Type="int" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
@@ -82,9 +94,9 @@
           <Property Name="UserSessionID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="WorkerID" Type="int" Nullable="false" />
           <Property Name="Token" Type="varchar" MaxLength="24" />
-          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="Expired" Type="datetime" Nullable="false" />
           <Property Name="RememberMe" Type="bit" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="UserType">
           <Key>
@@ -93,7 +105,7 @@
           <Property Name="UserTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="Description" Type="nvarchar" MaxLength="1000" />
-          <Property Name="AccessLevel" Type="int" Nullable="false" />
+          <Property Name="AccessLevel" Type="int" />
           <Property Name="CreationDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="Workers">
@@ -119,6 +131,30 @@
           <Property Name="Comment" Type="nvarchar" MaxLength="192" Nullable="false" />
           <Property Name="WriteOffTime" Type="datetime" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Audit_Tools">
+          <End Role="Tools" Type="Self.Tools" Multiplicity="1" />
+          <End Role="Audit" Type="Self.Audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tools">
+              <PropertyRef Name="ToolID" />
+            </Principal>
+            <Dependent Role="Audit">
+              <PropertyRef Name="ToolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Audit_Worker">
+          <End Role="Workers" Type="Self.Workers" Multiplicity="1" />
+          <End Role="Audit" Type="Self.Audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Workers">
+              <PropertyRef Name="WorkerID" />
+            </Principal>
+            <Dependent Role="Audit">
+              <PropertyRef Name="WorkerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DeletedTools_Tools">
           <End Role="Tools" Type="Self.Tools" Multiplicity="1" />
           <End Role="DeletedTools" Type="Self.DeletedTools" Multiplicity="*" />
@@ -279,6 +315,7 @@
           <Parameter Name="ToolID" Type="int" Mode="In" />
         </Function>
         <EntityContainer Name="StorageModelStoreContainer">
+          <EntitySet Name="Audit" EntityType="Self.Audit" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DeletedTools" EntityType="Self.DeletedTools" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Positions" EntityType="Self.Positions" Schema="dbo" store:Type="Tables" />
@@ -289,6 +326,14 @@
           <EntitySet Name="UserType" EntityType="Self.UserType" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Workers" EntityType="Self.Workers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="WriteOffTools" EntityType="Self.WriteOffTools" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Audit_Tools" Association="Self.FK_Audit_Tools">
+            <End Role="Tools" EntitySet="Tools" />
+            <End Role="Audit" EntitySet="Audit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Audit_Worker" Association="Self.FK_Audit_Worker">
+            <End Role="Workers" EntitySet="Workers" />
+            <End Role="Audit" EntitySet="Audit" />
+          </AssociationSet>
           <AssociationSet Name="FK_DeletedTools_Tools" Association="Self.FK_DeletedTools_Tools">
             <End Role="Tools" EntitySet="Tools" />
             <End Role="DeletedTools" EntitySet="DeletedTools" />
@@ -342,180 +387,49 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Storage.Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="Category">
-          <Key>
-            <PropertyRef Name="CategoryID" />
-          </Key>
-          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Tools" Relationship="Self.FK_Tools_Categories" FromRole="Categories" ToRole="Tools" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CellFrom" Type="Int32" Nullable="false" />
-          <Property Name="CellTo" Type="Int32" Nullable="false" />
-        </EntityType>
-        <EntityType Name="DeletedTool">
-          <Key>
-            <PropertyRef Name="DeletedToolID" />
-          </Key>
-          <Property Name="DeletedToolID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="WorkerID" Type="Int32" Nullable="false" />
-          <Property Name="ToolID" Type="Int32" Nullable="false" />
-          <Property Name="DeletedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Tool" Relationship="Self.FK_DeletedTools_Tools" FromRole="DeletedTools" ToRole="Tools" />
-          <NavigationProperty Name="Worker" Relationship="Self.FK_DeletedTools_Workers" FromRole="DeletedTools" ToRole="Workers" />
-        </EntityType>
-        <EntityType Name="Position">
-          <Key>
-            <PropertyRef Name="PositionID" />
-          </Key>
-          <Property Name="PositionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Workers" Relationship="Self.FK_Worker_Position" FromRole="Positions" ToRole="Workers" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Tool">
-          <Key>
-            <PropertyRef Name="ToolID" />
-          </Key>
-          <Property Name="ToolID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CategoryID" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Count" Type="Int32" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" />
-          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Category" Relationship="Self.FK_Tools_Categories" FromRole="Tools" ToRole="Categories" />
-          <NavigationProperty Name="DeletedTools" Relationship="Self.FK_DeletedTools_Tools" FromRole="Tools" ToRole="DeletedTools" />
-          <NavigationProperty Name="WriteOffTools" Relationship="Storage.Model.FK_WriteOffTools_Tools" FromRole="Tool" ToRole="WriteOffTool" />
-          <NavigationProperty Name="ToolsUses" Relationship="Storage.Model.FK_ToolsUses_Tools" FromRole="Tool" ToRole="ToolsUs" />
-          <Property Name="Cell" Type="Int32" Nullable="false" />
-          <Property Name="LowCount" Type="Int32" />
-          <Property Name="LowerCount" Type="Int32" />
-        </EntityType>
-        <EntityType Name="Worker">
-          <Key>
-            <PropertyRef Name="WorkerID" />
-          </Key>
-          <Property Name="WorkerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PositionID" Type="Int32" Nullable="false" />
-          <Property Name="LastName" Type="String" MaxLength="192" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="FirstName" Type="String" MaxLength="192" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MiddleName" Type="String" MaxLength="192" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" />
-          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="DeletedTools" Relationship="Self.FK_DeletedTools_Workers" FromRole="Workers" ToRole="DeletedTools" />
-          <NavigationProperty Name="Position" Relationship="Self.FK_Worker_Position" FromRole="Workers" ToRole="Positions" />
-          <NavigationProperty Name="UserSessions" Relationship="Storage.Model.FK_UserSession_Worker" FromRole="Worker" ToRole="UserSession" />
-          <NavigationProperty Name="Users" Relationship="Storage.Model.FK_User_Workers" FromRole="Worker" ToRole="User" />
-          <NavigationProperty Name="WriteOffTools" Relationship="Storage.Model.FK_WriteOffTools_Workers" FromRole="Worker" ToRole="WriteOffTool" />
-          <NavigationProperty Name="ToolsUses" Relationship="Storage.Model.FK_ToolsUses_ManageWorkers" FromRole="Worker" ToRole="ToolsUs" />
-          <NavigationProperty Name="ToolsUses1" Relationship="Storage.Model.FK_ToolsUses_Worker" FromRole="Worker" ToRole="ToolsUs" />
-        </EntityType>
-        <Association Name="FK_Tools_Categories">
-          <End Role="Categories" Type="Self.Category" Multiplicity="1" />
-          <End Role="Tools" Type="Self.Tool" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Categories">
-              <PropertyRef Name="CategoryID" />
-            </Principal>
-            <Dependent Role="Tools">
-              <PropertyRef Name="CategoryID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DeletedTools_Tools">
-          <End Role="Tools" Type="Self.Tool" Multiplicity="1" />
-          <End Role="DeletedTools" Type="Self.DeletedTool" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tools">
-              <PropertyRef Name="ToolID" />
-            </Principal>
-            <Dependent Role="DeletedTools">
-              <PropertyRef Name="ToolID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_DeletedTools_Workers">
-          <End Role="Workers" Type="Self.Worker" Multiplicity="1" />
-          <End Role="DeletedTools" Type="Self.DeletedTool" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Workers">
-              <PropertyRef Name="WorkerID" />
-            </Principal>
-            <Dependent Role="DeletedTools">
-              <PropertyRef Name="WorkerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Worker_Position">
-          <End Role="Positions" Type="Self.Position" Multiplicity="1" />
-          <End Role="Workers" Type="Self.Worker" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Positions">
-              <PropertyRef Name="PositionID" />
-            </Principal>
-            <Dependent Role="Workers">
-              <PropertyRef Name="PositionID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Categories" EntityType="Self.Category" />
-          <EntitySet Name="DeletedTools" EntityType="Self.DeletedTool" />
-          <EntitySet Name="Positions" EntityType="Self.Position" />
-          <EntitySet Name="Tools" EntityType="Self.Tool" />
-          <EntitySet Name="Workers" EntityType="Self.Worker" />
-          <AssociationSet Name="FK_Tools_Categories" Association="Self.FK_Tools_Categories">
-            <End Role="Categories" EntitySet="Categories" />
-            <End Role="Tools" EntitySet="Tools" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DeletedTools_Tools" Association="Self.FK_DeletedTools_Tools">
-            <End Role="Tools" EntitySet="Tools" />
-            <End Role="DeletedTools" EntitySet="DeletedTools" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DeletedTools_Workers" Association="Self.FK_DeletedTools_Workers">
-            <End Role="Workers" EntitySet="Workers" />
-            <End Role="DeletedTools" EntitySet="DeletedTools" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Worker_Position" Association="Self.FK_Worker_Position">
-            <End Role="Positions" EntitySet="Positions" />
-            <End Role="Workers" EntitySet="Workers" />
-          </AssociationSet>
-          <EntitySet Name="UserSessions" EntityType="Storage.Model.UserSession" />
-          <AssociationSet Name="FK_UserSession_Worker" Association="Storage.Model.FK_UserSession_Worker">
-            <End Role="Worker" EntitySet="Workers" />
-            <End Role="UserSession" EntitySet="UserSessions" />
-          </AssociationSet>
-          <FunctionImport Name="DeleteUserSessionsByToken" ReturnType="Collection(Int32)">
-          <Parameter Name="Token" Mode="In" Type="String" />
-          </FunctionImport>
-          <FunctionImport Name="DeleteUserSessionsByUserID" ReturnType="Collection(Int32)">
-          <Parameter Name="WorkerID" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="DeleteExpiredSessions" ReturnType="Collection(Int32)">
-          <Parameter Name="DateOlder" Mode="In" Type="DateTime" />
-          </FunctionImport>
-          <EntitySet Name="Users" EntityType="Storage.Model.User" />
-          <AssociationSet Name="FK_User_Workers" Association="Storage.Model.FK_User_Workers">
-            <End Role="Worker" EntitySet="Workers" />
-            <End Role="User" EntitySet="Users" />
-          </AssociationSet>
-          <EntitySet Name="WriteOffTools" EntityType="Storage.Model.WriteOffTool" />
-          <AssociationSet Name="FK_WriteOffTools_Tools" Association="Storage.Model.FK_WriteOffTools_Tools">
-            <End Role="Tool" EntitySet="Tools" />
-            <End Role="WriteOffTool" EntitySet="WriteOffTools" />
-          </AssociationSet>
-          <AssociationSet Name="FK_WriteOffTools_Workers" Association="Storage.Model.FK_WriteOffTools_Workers">
-            <End Role="Worker" EntitySet="Workers" />
-            <End Role="WriteOffTool" EntitySet="WriteOffTools" />
-          </AssociationSet>
+          <EntitySet Name="Audits" EntityType="Storage.Model.Audit" />
+          <EntitySet Name="Categories" EntityType="Storage.Model.Category" />
+          <EntitySet Name="DeletedTools" EntityType="Storage.Model.DeletedTool" />
+          <EntitySet Name="Positions" EntityType="Storage.Model.Position" />
+          <EntitySet Name="Tools" EntityType="Storage.Model.Tool" />
           <EntitySet Name="ToolsUses" EntityType="Storage.Model.ToolsUs" />
+          <EntitySet Name="Users" EntityType="Storage.Model.User" />
+          <EntitySet Name="UserSessions" EntityType="Storage.Model.UserSession" />
+          <EntitySet Name="UserTypes" EntityType="Storage.Model.UserType" />
+          <EntitySet Name="Workers" EntityType="Storage.Model.Worker" />
+          <EntitySet Name="WriteOffTools" EntityType="Storage.Model.WriteOffTool" />
+          <AssociationSet Name="FK_Audit_Tools" Association="Storage.Model.FK_Audit_Tools">
+            <End Role="Tool" EntitySet="Tools" />
+            <End Role="Audit" EntitySet="Audits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Audit_Worker" Association="Storage.Model.FK_Audit_Worker">
+            <End Role="Worker" EntitySet="Workers" />
+            <End Role="Audit" EntitySet="Audits" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tools_Categories" Association="Storage.Model.FK_Tools_Categories">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Tool" EntitySet="Tools" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTools_Tools" Association="Storage.Model.FK_DeletedTools_Tools">
+            <End Role="Tool" EntitySet="Tools" />
+            <End Role="DeletedTool" EntitySet="DeletedTools" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeletedTools_Workers" Association="Storage.Model.FK_DeletedTools_Workers">
+            <End Role="Worker" EntitySet="Workers" />
+            <End Role="DeletedTool" EntitySet="DeletedTools" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Worker_Position" Association="Storage.Model.FK_Worker_Position">
+            <End Role="Position" EntitySet="Positions" />
+            <End Role="Worker" EntitySet="Workers" />
+          </AssociationSet>
           <AssociationSet Name="FK_ToolsUses_Tools" Association="Storage.Model.FK_ToolsUses_Tools">
             <End Role="Tool" EntitySet="Tools" />
             <End Role="ToolsUs" EntitySet="ToolsUses" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WriteOffTools_Tools" Association="Storage.Model.FK_WriteOffTools_Tools">
+            <End Role="Tool" EntitySet="Tools" />
+            <End Role="WriteOffTool" EntitySet="WriteOffTools" />
           </AssociationSet>
           <AssociationSet Name="FK_ToolsUses_ManageWorkers" Association="Storage.Model.FK_ToolsUses_ManageWorkers">
             <End Role="Worker" EntitySet="Workers" />
@@ -525,107 +439,106 @@
             <End Role="Worker" EntitySet="Workers" />
             <End Role="ToolsUs" EntitySet="ToolsUses" />
           </AssociationSet>
-          <FunctionImport Name="Get_UsersUsedTool" ReturnType="Collection(Storage.Model.Get_UsersUsedTool_Result)">
-          <Parameter Name="ToolID" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <FunctionImport Name="Get_ToolsUsedByUser" ReturnType="Collection(Storage.Model.Get_ToolsUsedByUser_Result)">
-          <Parameter Name="WorkerID" Mode="In" Type="Int32" />
-          </FunctionImport>
-          <EntitySet Name="UserTypes" EntityType="Storage.Model.UserType" />
           <AssociationSet Name="FK_User_UserType" Association="Storage.Model.FK_User_UserType">
             <End Role="UserType" EntitySet="UserTypes" />
             <End Role="User" EntitySet="Users" />
           </AssociationSet>
+          <AssociationSet Name="FK_User_Workers" Association="Storage.Model.FK_User_Workers">
+            <End Role="Worker" EntitySet="Workers" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserSession_Worker" Association="Storage.Model.FK_UserSession_Worker">
+            <End Role="Worker" EntitySet="Workers" />
+            <End Role="UserSession" EntitySet="UserSessions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_WriteOffTools_Workers" Association="Storage.Model.FK_WriteOffTools_Workers">
+            <End Role="Worker" EntitySet="Workers" />
+            <End Role="WriteOffTool" EntitySet="WriteOffTools" />
+          </AssociationSet>
+          <FunctionImport Name="DeleteExpiredSessions" ReturnType="Collection(Int32)">
+            <Parameter Name="DateOlder" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteUserSessionsByToken" ReturnType="Collection(Int32)">
+            <Parameter Name="Token" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="DeleteUserSessionsByUserID" ReturnType="Collection(Int32)">
+            <Parameter Name="WorkerID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Get_ToolsUsedByUser" ReturnType="Collection(Storage.Model.Get_ToolsUsedByUser_Result)">
+            <Parameter Name="WorkerID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Get_UsersUsedTool" ReturnType="Collection(Storage.Model.Get_UsersUsedTool_Result)">
+            <Parameter Name="ToolID" Mode="In" Type="Int32" />
+          </FunctionImport>
           </EntityContainer>
-        <EntityType Name="UserSession">
+        <EntityType Name="Audit">
           <Key>
-            <PropertyRef Name="UserSessionID" />
+            <PropertyRef Name="AuditID" />
           </Key>
-          <Property Name="UserSessionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AuditID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="WorkerID" Type="Int32" Nullable="false" />
-          <Property Name="Token" Type="String" MaxLength="24" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_UserSession_Worker" FromRole="UserSession" ToRole="Worker" />
-          <Property Name="Expired" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="RememberMe" Type="Boolean" Nullable="false" />
-        </EntityType>
-        <Association Name="FK_UserSession_Worker">
-          <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="1" />
-          <End Type="Storage.Model.UserSession" Role="UserSession" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Worker">
-              <PropertyRef Name="WorkerID" />
-            </Principal>
-            <Dependent Role="UserSession">
-              <PropertyRef Name="WorkerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="UserID" />
-          </Key>
-          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="WorkerID" Type="Int32" Nullable="false" />
-          <Property Name="Email" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
-          <Property Name="Salt" Type="Int32" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_User_Workers" FromRole="User" ToRole="Worker" />
-          <Property Name="UserName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
-          <Property Name="UserTypeID" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="UserType" Relationship="Storage.Model.FK_User_UserType" FromRole="User" ToRole="UserType" />
-        </EntityType>
-        <Association Name="FK_User_Workers">
-          <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="1" />
-          <End Type="Storage.Model.User" Role="User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Worker">
-              <PropertyRef Name="WorkerID" />
-            </Principal>
-            <Dependent Role="User">
-              <PropertyRef Name="WorkerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <EntityType Name="WriteOffTool">
-          <Key>
-            <PropertyRef Name="WriteOffToolID" />
-          </Key>
-          <Property Name="WriteOffToolID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ToolID" Type="Int32" Nullable="false" />
-          <Property Name="WorkerID" Type="Int32" Nullable="false" />
+          <Property Name="Action" Type="Int32" Nullable="false" />
           <Property Name="Count" Type="Int32" Nullable="false" />
-          <Property Name="WriteOffTime" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Tool" Relationship="Storage.Model.FK_WriteOffTools_Tools" FromRole="WriteOffTool" ToRole="Tool" />
-          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_WriteOffTools_Workers" FromRole="WriteOffTool" ToRole="Worker" />
-          <Property Name="Comment" Type="String" Nullable="false" MaxLength="192" FixedLength="false" Unicode="true" />
+          <Property Name="Readed" Type="Boolean" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Tool" Relationship="Storage.Model.FK_Audit_Tools" FromRole="Audit" ToRole="Tool" />
+          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_Audit_Worker" FromRole="Audit" ToRole="Worker" />
         </EntityType>
-        <Association Name="FK_WriteOffTools_Tools">
-          <End Type="Storage.Model.Tool" Role="Tool" Multiplicity="1" />
-          <End Type="Storage.Model.WriteOffTool" Role="WriteOffTool" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tool">
-              <PropertyRef Name="ToolID" />
-            </Principal>
-            <Dependent Role="WriteOffTool">
-              <PropertyRef Name="ToolID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_WriteOffTools_Workers">
-          <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="1" />
-          <End Type="Storage.Model.WriteOffTool" Role="WriteOffTool" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Worker">
-              <PropertyRef Name="WorkerID" />
-            </Principal>
-            <Dependent Role="WriteOffTool">
-              <PropertyRef Name="WorkerID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="CategoryID" />
+          </Key>
+          <Property Name="CategoryID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="CellFrom" Type="Int32" Nullable="false" />
+          <Property Name="CellTo" Type="Int32" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Tools" Relationship="Storage.Model.FK_Tools_Categories" FromRole="Category" ToRole="Tool" />
+        </EntityType>
+        <EntityType Name="DeletedTool">
+          <Key>
+            <PropertyRef Name="DeletedToolID" />
+          </Key>
+          <Property Name="DeletedToolID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WorkerID" Type="Int32" Nullable="false" />
+          <Property Name="ToolID" Type="Int32" Nullable="false" />
+          <Property Name="DeletedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Tool" Relationship="Storage.Model.FK_DeletedTools_Tools" FromRole="DeletedTool" ToRole="Tool" />
+          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_DeletedTools_Workers" FromRole="DeletedTool" ToRole="Worker" />
+        </EntityType>
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="PositionID" />
+          </Key>
+          <Property Name="PositionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Workers" Relationship="Storage.Model.FK_Worker_Position" FromRole="Position" ToRole="Worker" />
+        </EntityType>
+        <EntityType Name="Tool">
+          <Key>
+            <PropertyRef Name="ToolID" />
+          </Key>
+          <Property Name="ToolID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="Cell" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LowCount" Type="Int32" />
+          <Property Name="LowerCount" Type="Int32" />
+          <NavigationProperty Name="Audits" Relationship="Storage.Model.FK_Audit_Tools" FromRole="Tool" ToRole="Audit" />
+          <NavigationProperty Name="Category" Relationship="Storage.Model.FK_Tools_Categories" FromRole="Tool" ToRole="Category" />
+          <NavigationProperty Name="DeletedTools" Relationship="Storage.Model.FK_DeletedTools_Tools" FromRole="Tool" ToRole="DeletedTool" />
+          <NavigationProperty Name="ToolsUses" Relationship="Storage.Model.FK_ToolsUses_Tools" FromRole="Tool" ToRole="ToolsUs" />
+          <NavigationProperty Name="WriteOffTools" Relationship="Storage.Model.FK_WriteOffTools_Tools" FromRole="Tool" ToRole="WriteOffTool" />
+        </EntityType>
         <EntityType Name="ToolsUs">
           <Key>
             <PropertyRef Name="ToolsUseID" />
@@ -637,9 +550,153 @@
           <Property Name="Count" Type="Int32" Nullable="false" />
           <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Tool" Relationship="Storage.Model.FK_ToolsUses_Tools" FromRole="ToolsUs" ToRole="Tool" />
-          <NavigationProperty Name="ManageWorker" Relationship="Storage.Model.FK_ToolsUses_ManageWorkers" FromRole="ToolsUs" ToRole="Worker" />
-          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_ToolsUses_Worker" FromRole="ToolsUs" ToRole="Worker" />
+          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_ToolsUses_ManageWorkers" FromRole="ToolsUs" ToRole="Worker" />
+          <NavigationProperty Name="Worker1" Relationship="Storage.Model.FK_ToolsUses_Worker" FromRole="ToolsUs" ToRole="Worker" />
         </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WorkerID" Type="Int32" Nullable="false" />
+          <Property Name="UserTypeID" Type="Int32" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
+          <Property Name="Salt" Type="Int32" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="UserType" Relationship="Storage.Model.FK_User_UserType" FromRole="User" ToRole="UserType" />
+          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_User_Workers" FromRole="User" ToRole="Worker" />
+        </EntityType>
+        <EntityType Name="UserSession">
+          <Key>
+            <PropertyRef Name="UserSessionID" />
+          </Key>
+          <Property Name="UserSessionID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WorkerID" Type="Int32" Nullable="false" />
+          <Property Name="Token" Type="String" MaxLength="24" FixedLength="false" Unicode="false" />
+          <Property Name="Expired" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RememberMe" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_UserSession_Worker" FromRole="UserSession" ToRole="Worker" />
+        </EntityType>
+        <EntityType Name="UserType">
+          <Key>
+            <PropertyRef Name="UserTypeID" />
+          </Key>
+          <Property Name="UserTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="AccessLevel" Type="Int32" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Users" Relationship="Storage.Model.FK_User_UserType" FromRole="UserType" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Worker">
+          <Key>
+            <PropertyRef Name="WorkerID" />
+          </Key>
+          <Property Name="WorkerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PositionID" Type="Int32" Nullable="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="192" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="192" FixedLength="false" Unicode="true" />
+          <Property Name="MiddleName" Type="String" Nullable="false" MaxLength="192" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Audits" Relationship="Storage.Model.FK_Audit_Worker" FromRole="Worker" ToRole="Audit" />
+          <NavigationProperty Name="DeletedTools" Relationship="Storage.Model.FK_DeletedTools_Workers" FromRole="Worker" ToRole="DeletedTool" />
+          <NavigationProperty Name="Position" Relationship="Storage.Model.FK_Worker_Position" FromRole="Worker" ToRole="Position" />
+          <NavigationProperty Name="ToolsUses" Relationship="Storage.Model.FK_ToolsUses_ManageWorkers" FromRole="Worker" ToRole="ToolsUs" />
+          <NavigationProperty Name="ToolsUses1" Relationship="Storage.Model.FK_ToolsUses_Worker" FromRole="Worker" ToRole="ToolsUs" />
+          <NavigationProperty Name="Users" Relationship="Storage.Model.FK_User_Workers" FromRole="Worker" ToRole="User" />
+          <NavigationProperty Name="UserSessions" Relationship="Storage.Model.FK_UserSession_Worker" FromRole="Worker" ToRole="UserSession" />
+          <NavigationProperty Name="WriteOffTools" Relationship="Storage.Model.FK_WriteOffTools_Workers" FromRole="Worker" ToRole="WriteOffTool" />
+        </EntityType>
+        <EntityType Name="WriteOffTool">
+          <Key>
+            <PropertyRef Name="WriteOffToolID" />
+          </Key>
+          <Property Name="WriteOffToolID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ToolID" Type="Int32" Nullable="false" />
+          <Property Name="WorkerID" Type="Int32" Nullable="false" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="Comment" Type="String" Nullable="false" MaxLength="192" FixedLength="false" Unicode="true" />
+          <Property Name="WriteOffTime" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="Tool" Relationship="Storage.Model.FK_WriteOffTools_Tools" FromRole="WriteOffTool" ToRole="Tool" />
+          <NavigationProperty Name="Worker" Relationship="Storage.Model.FK_WriteOffTools_Workers" FromRole="WriteOffTool" ToRole="Worker" />
+        </EntityType>
+        <Association Name="FK_Audit_Tools">
+          <End Type="Storage.Model.Tool" Role="Tool" Multiplicity="1" />
+          <End Type="Storage.Model.Audit" Role="Audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tool">
+              <PropertyRef Name="ToolID" />
+            </Principal>
+            <Dependent Role="Audit">
+              <PropertyRef Name="ToolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Audit_Worker">
+          <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="1" />
+          <End Type="Storage.Model.Audit" Role="Audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Worker">
+              <PropertyRef Name="WorkerID" />
+            </Principal>
+            <Dependent Role="Audit">
+              <PropertyRef Name="WorkerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tools_Categories">
+          <End Type="Storage.Model.Category" Role="Category" Multiplicity="1" />
+          <End Type="Storage.Model.Tool" Role="Tool" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Category">
+              <PropertyRef Name="CategoryID" />
+            </Principal>
+            <Dependent Role="Tool">
+              <PropertyRef Name="CategoryID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTools_Tools">
+          <End Type="Storage.Model.Tool" Role="Tool" Multiplicity="1" />
+          <End Type="Storage.Model.DeletedTool" Role="DeletedTool" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tool">
+              <PropertyRef Name="ToolID" />
+            </Principal>
+            <Dependent Role="DeletedTool">
+              <PropertyRef Name="ToolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeletedTools_Workers">
+          <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="1" />
+          <End Type="Storage.Model.DeletedTool" Role="DeletedTool" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Worker">
+              <PropertyRef Name="WorkerID" />
+            </Principal>
+            <Dependent Role="DeletedTool">
+              <PropertyRef Name="WorkerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Worker_Position">
+          <End Type="Storage.Model.Position" Role="Position" Multiplicity="1" />
+          <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Position">
+              <PropertyRef Name="PositionID" />
+            </Principal>
+            <Dependent Role="Worker">
+              <PropertyRef Name="PositionID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_ToolsUses_Tools">
           <End Type="Storage.Model.Tool" Role="Tool" Multiplicity="1" />
           <End Type="Storage.Model.ToolsUs" Role="ToolsUs" Multiplicity="*" />
@@ -648,6 +705,18 @@
               <PropertyRef Name="ToolID" />
             </Principal>
             <Dependent Role="ToolsUs">
+              <PropertyRef Name="ToolID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WriteOffTools_Tools">
+          <End Type="Storage.Model.Tool" Role="Tool" Multiplicity="1" />
+          <End Type="Storage.Model.WriteOffTool" Role="WriteOffTool" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tool">
+              <PropertyRef Name="ToolID" />
+            </Principal>
+            <Dependent Role="WriteOffTool">
               <PropertyRef Name="ToolID" />
             </Dependent>
           </ReferentialConstraint>
@@ -676,32 +745,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <ComplexType Name="Get_UsersUsedTool_Result">
-          <Property Type="Int32" Name="ToolID" Nullable="false" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="255" />
-          <Property Type="Int32" Name="WorkerID" Nullable="false" />
-          <Property Type="String" Name="LastName" Nullable="false" MaxLength="192" />
-          <Property Type="String" Name="FirstName" Nullable="false" MaxLength="192" />
-          <Property Type="String" Name="MiddleName" Nullable="false" MaxLength="192" />
-          <Property Type="Int32" Name="Count" Nullable="true" />
-        </ComplexType>
-        <ComplexType Name="Get_ToolsUsedByUser_Result">
-          <Property Type="Int32" Name="ToolID" Nullable="false" />
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="255" />
-          <Property Type="Int32" Name="WorkerID" Nullable="false" />
-          <Property Type="Int32" Name="Count" Nullable="true" />
-        </ComplexType>
-        <EntityType Name="UserType">
-          <Key>
-            <PropertyRef Name="UserTypeID" />
-          </Key>
-          <Property Name="UserTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="Description" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="AccessLevel" Type="Int32" Nullable="false" />
-          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Users" Relationship="Storage.Model.FK_User_UserType" FromRole="UserType" ToRole="User" />
-        </EntityType>
         <Association Name="FK_User_UserType">
           <End Type="Storage.Model.UserType" Role="UserType" Multiplicity="1" />
           <End Type="Storage.Model.User" Role="User" Multiplicity="*" />
@@ -714,43 +757,107 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_Workers">
+          <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="1" />
+          <End Type="Storage.Model.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Worker">
+              <PropertyRef Name="WorkerID" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="WorkerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserSession_Worker">
+          <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="1" />
+          <End Type="Storage.Model.UserSession" Role="UserSession" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Worker">
+              <PropertyRef Name="WorkerID" />
+            </Principal>
+            <Dependent Role="UserSession">
+              <PropertyRef Name="WorkerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_WriteOffTools_Workers">
+          <End Type="Storage.Model.Worker" Role="Worker" Multiplicity="1" />
+          <End Type="Storage.Model.WriteOffTool" Role="WriteOffTool" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Worker">
+              <PropertyRef Name="WorkerID" />
+            </Principal>
+            <Dependent Role="WriteOffTool">
+              <PropertyRef Name="WorkerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="Get_ToolsUsedByUser_Result">
+          <Property Type="Int32" Name="ToolID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="255" />
+          <Property Type="Int32" Name="WorkerID" Nullable="false" />
+          <Property Type="Int32" Name="Count" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Get_UsersUsedTool_Result">
+          <Property Type="Int32" Name="ToolID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="255" />
+          <Property Type="Int32" Name="WorkerID" Nullable="false" />
+          <Property Type="String" Name="LastName" Nullable="false" MaxLength="192" />
+          <Property Type="String" Name="FirstName" Nullable="false" MaxLength="192" />
+          <Property Type="String" Name="MiddleName" Nullable="false" MaxLength="192" />
+          <Property Type="Int32" Name="Count" Nullable="true" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="StorageModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="Audits">
+            <EntityTypeMapping TypeName="Storage.Model.Audit">
+              <MappingFragment StoreEntitySet="Audit">
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="Readed" ColumnName="Readed" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="ToolID" ColumnName="ToolID" />
+                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
+                <ScalarProperty Name="AuditID" ColumnName="AuditID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Categories">
             <EntityTypeMapping TypeName="Storage.Model.Category">
               <MappingFragment StoreEntitySet="Categories">
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
                 <ScalarProperty Name="CellTo" ColumnName="CellTo" />
                 <ScalarProperty Name="CellFrom" ColumnName="CellFrom" />
-                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DeletedTools">
             <EntityTypeMapping TypeName="Storage.Model.DeletedTool">
               <MappingFragment StoreEntitySet="DeletedTools">
-                <ScalarProperty Name="DeletedToolID" ColumnName="DeletedToolID" />
-                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
-                <ScalarProperty Name="ToolID" ColumnName="ToolID" />
                 <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="ToolID" ColumnName="ToolID" />
+                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
+                <ScalarProperty Name="DeletedToolID" ColumnName="DeletedToolID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Positions">
             <EntityTypeMapping TypeName="Storage.Model.Position">
               <MappingFragment StoreEntitySet="Positions">
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="PositionID" ColumnName="PositionID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PositionID" ColumnName="PositionID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -759,68 +866,13 @@
               <MappingFragment StoreEntitySet="Tools">
                 <ScalarProperty Name="LowerCount" ColumnName="LowerCount" />
                 <ScalarProperty Name="LowCount" ColumnName="LowCount" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="Cell" ColumnName="Cell" />
-                <ScalarProperty Name="ToolID" ColumnName="ToolID" />
-                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Count" ColumnName="Count" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Workers">
-            <EntityTypeMapping TypeName="Storage.Model.Worker">
-              <MappingFragment StoreEntitySet="Workers">
-                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
-                <ScalarProperty Name="PositionID" ColumnName="PositionID" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="UserSessions">
-            <EntityTypeMapping TypeName="Storage.Model.UserSession">
-              <MappingFragment StoreEntitySet="UserSession">
-                <ScalarProperty Name="RememberMe" ColumnName="RememberMe" />
-                <ScalarProperty Name="Expired" ColumnName="Expired" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="Token" ColumnName="Token" />
-                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
-                <ScalarProperty Name="UserSessionID" ColumnName="UserSessionID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="DeleteUserSessionsByToken" FunctionName="Storage.Model.Store.DeleteUserSessionsByToken" />
-          <FunctionImportMapping FunctionImportName="DeleteUserSessionsByUserID" FunctionName="Storage.Model.Store.DeleteUserSessionsByUserID" />
-          <FunctionImportMapping FunctionImportName="DeleteExpiredSessions" FunctionName="Storage.Model.Store.DeleteExpiredSessions" />
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="Storage.Model.User">
-              <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="UserTypeID" ColumnName="UserTypeID" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="Salt" ColumnName="Salt" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
-                <ScalarProperty Name="UserID" ColumnName="UserID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="WriteOffTools">
-            <EntityTypeMapping TypeName="Storage.Model.WriteOffTool">
-              <MappingFragment StoreEntitySet="WriteOffTools">
-                <ScalarProperty Name="Comment" ColumnName="Comment" />
-                <ScalarProperty Name="WriteOffTime" ColumnName="WriteOffTime" />
-                <ScalarProperty Name="Count" ColumnName="Count" />
-                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
                 <ScalarProperty Name="ToolID" ColumnName="ToolID" />
-                <ScalarProperty Name="WriteOffToolID" ColumnName="WriteOffToolID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -836,6 +888,82 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="Storage.Model.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Salt" ColumnName="Salt" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserTypeID" ColumnName="UserTypeID" />
+                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserSessions">
+            <EntityTypeMapping TypeName="Storage.Model.UserSession">
+              <MappingFragment StoreEntitySet="UserSession">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="RememberMe" ColumnName="RememberMe" />
+                <ScalarProperty Name="Expired" ColumnName="Expired" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
+                <ScalarProperty Name="UserSessionID" ColumnName="UserSessionID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserTypes">
+            <EntityTypeMapping TypeName="Storage.Model.UserType">
+              <MappingFragment StoreEntitySet="UserType">
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="AccessLevel" ColumnName="AccessLevel" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserTypeID" ColumnName="UserTypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Workers">
+            <EntityTypeMapping TypeName="Storage.Model.Worker">
+              <MappingFragment StoreEntitySet="Workers">
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="MiddleName" ColumnName="MiddleName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="PositionID" ColumnName="PositionID" />
+                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WriteOffTools">
+            <EntityTypeMapping TypeName="Storage.Model.WriteOffTool">
+              <MappingFragment StoreEntitySet="WriteOffTools">
+                <ScalarProperty Name="WriteOffTime" ColumnName="WriteOffTime" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
+                <ScalarProperty Name="ToolID" ColumnName="ToolID" />
+                <ScalarProperty Name="WriteOffToolID" ColumnName="WriteOffToolID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="DeleteExpiredSessions" FunctionName="Storage.Model.Store.DeleteExpiredSessions" />
+          <FunctionImportMapping FunctionImportName="DeleteUserSessionsByToken" FunctionName="Storage.Model.Store.DeleteUserSessionsByToken" />
+          <FunctionImportMapping FunctionImportName="DeleteUserSessionsByUserID" FunctionName="Storage.Model.Store.DeleteUserSessionsByUserID" />
+          <FunctionImportMapping FunctionImportName="Get_ToolsUsedByUser" FunctionName="Storage.Model.Store.Get_ToolsUsedByUser">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Storage.Model.Get_ToolsUsedByUser_Result">
+                <ScalarProperty Name="ToolID" ColumnName="ToolID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="Get_UsersUsedTool" FunctionName="Storage.Model.Store.Get_UsersUsedTool">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Storage.Model.Get_UsersUsedTool_Result">
@@ -849,27 +977,6 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="Get_ToolsUsedByUser" FunctionName="Storage.Model.Store.Get_ToolsUsedByUser">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="Storage.Model.Get_ToolsUsedByUser_Result">
-                <ScalarProperty Name="ToolID" ColumnName="ToolID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="WorkerID" ColumnName="WorkerID" />
-                <ScalarProperty Name="Count" ColumnName="Count" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <EntitySetMapping Name="UserTypes">
-            <EntityTypeMapping TypeName="Storage.Model.UserType">
-              <MappingFragment StoreEntitySet="UserType">
-                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
-                <ScalarProperty Name="AccessLevel" ColumnName="AccessLevel" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="UserTypeID" ColumnName="UserTypeID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

@@ -1,1 +1,87 @@
-﻿
+﻿<div class="row bottom-buffer">
+    <div class="col-xs-12">
+        <button class="btn btn-primary pull-right" data-bind="click: addNewClick"><span class="pull-left text-left-icon">Добавить учетную запись</span><i class="fa fa-plus-square-o"></i></button>
+    </div>
+</div>
+<table class="table table-striped table-bordered table-hover dataTable tvalign-middle">
+    <thead>
+        <tr>
+            <th class="clicable" data-bind="css: {'sorting': sortField() != 'username',
+                                                    'sorting_asc': sortField()=='username' && sortASC()==true,
+                                                    'sorting_desc': sortField()=='username' && sortASC()==false},
+                                                    click: onChangeSortable.bind($data, 'username')">
+                <span>Логин</span>
+            </th>
+            <th class="clicable" data-bind="css: {'sorting': sortField() != 'email',
+                                                    'sorting_asc': sortField()=='email' && sortASC()==true,
+                                                    'sorting_desc': sortField()=='email' && sortASC()==false},
+                                                    click: onChangeSortable.bind($data, 'email')">
+                <span>Email</span>
+            </th>
+            <th>
+                <span>Работник</span>
+            </th>
+            <th class="clicable" data-bind="css: {'sorting': sortField() != 'type',
+                                                    'sorting_asc': sortField()=='type' && sortASC()==true,
+                                                    'sorting_desc': sortField()=='type' && sortASC()==false},
+                                                    click: onChangeSortable.bind($data, 'type')">
+                <span>Тип</span>
+            </th>
+            <th class="clicable" data-bind="css: {'sorting': sortField() != 'creationdate',
+                                                    'sorting_asc': sortField()=='creationdate' && sortASC()==true,
+                                                    'sorting_desc': sortField()=='creationdate' && sortASC()==false},
+                                                    click: onChangeSortable.bind($data, 'creationdate')">
+                <span>Дата создания</span>
+            </th>
+            <th width="100">
+                <span>Меню</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: rootApiItems">
+        <tr>
+            <td>
+                <span data-bind="html: username, attr: {title: username}"></span>
+            </td>
+            <td>
+                <span data-bind="html: email, attr: {title: email}"></span>
+            </td>
+            <td>
+                <span data-bind="html: worker().shortFullName(), attr: {title: worker().fullName()}"></span>
+            </td>
+            <td>
+                <span data-bind="text: type, attr: {title: type}"></span>
+            </td>
+            <td>
+                <span data-bind="text: localTime, attr: {title: localTime}"></span>
+            </td>
+            <td class="text-center">
+                <div class="dropdown">
+                    <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'position_menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu" data-bind="attr: {'aria-labelledby': 'position_menu' + $index()}">
+                        <li class="clicable" data-bind="click: $parent.editClick"><a><i class="fa fa-edit text-primary text-right-icon"></i>Изменить</a></li>
+                        <li class="clicable" data-bind="click: id() > 1 ? $parent.onDeleteAccount: null, visible: id() > 1"><a><i class="fa fa-trash-o text-danger text-right-icon"></i>Удалить</a></li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div data-bind="with: selectedItem">
+    <div data-bind="template: {
+                name: 'objectDialog', data: {
+                    showDialog: $parent.showDialog,
+                    wide: false,
+                    isNew: ko.unwrap($data.isNew),
+                    customCancelText: null,
+                    customApplyText: null,
+                    title: 'Учетная запись',
+                    subtitle: ko.unwrap($data.isNew) ? '' : ko.unwrap(worker().fullName),
+                    editor: 'accountEditor',
+                    object: $data,
+                    onCancelClick: $parent.onCancelDialog,
+                    onApplyClick: $parent.onApplyDialog
+                }
+                }">
+    </div>
+</div>

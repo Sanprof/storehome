@@ -33,20 +33,11 @@ namespace StoreHouse.Controllers
                 {
                     if (dbuser.Password.ToUpper().CompareTo(PasswordGenerator.GetPasswordSHA1(Convert.ToString(user.password), dbuser.Salt)) == 0)
                     {
-                        token = UserSessionState.AddNew(dbuser.UserID, user.rememberme);
-                        store.UserSessions.Add(new StoreHouse.Models.UserSession()
-                        {
-                            WorkerID = dbuser.WorkerID,
-                            Token = token,
-                            RememberMe = true,
-                            Expired = DateTimeOffset.UtcNow.DateTime.AddMonths(1),
-                            CreatedDate = DateTimeOffset.UtcNow.DateTime
-                        });
-                        store.SaveChanges();
+                        token = UserSessionState.AddNew(dbuser.WorkerID, user.rememberme);
                         response = new ExpandoObject();
                         response.rememberme = user.rememberme;
                         response.username = dbuser.UserName;
-                        response.accesslevel = dbuser.UserType.AccessLevel;
+                        response.privilege = dbuser.UserType.AccessLevel;
                     }
                     else
                         status = Code.LoginFailed;

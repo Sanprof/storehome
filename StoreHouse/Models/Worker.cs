@@ -16,12 +16,13 @@ namespace StoreHouse.Models
     {
         public Worker()
         {
+            this.Audits = new HashSet<Audit>();
             this.DeletedTools = new HashSet<DeletedTool>();
-            this.UserSessions = new HashSet<UserSession>();
-            this.Users = new HashSet<User>();
-            this.WriteOffTools = new HashSet<WriteOffTool>();
             this.ToolsUses = new HashSet<ToolsUs>();
             this.ToolsUses1 = new HashSet<ToolsUs>();
+            this.Users = new HashSet<User>();
+            this.UserSessions = new HashSet<UserSession>();
+            this.WriteOffTools = new HashSet<WriteOffTool>();
         }
     
         public int WorkerID { get; set; }
@@ -32,12 +33,13 @@ namespace StoreHouse.Models
         public Nullable<bool> IsDeleted { get; set; }
         public System.DateTime CreationDate { get; set; }
     
+        public virtual ICollection<Audit> Audits { get; set; }
         public virtual ICollection<DeletedTool> DeletedTools { get; set; }
         public virtual Position Position { get; set; }
-        public virtual ICollection<UserSession> UserSessions { get; set; }
-        public virtual ICollection<User> Users { get; set; }
-        public virtual ICollection<WriteOffTool> WriteOffTools { get; set; }
         public virtual ICollection<ToolsUs> ToolsUses { get; set; }
         public virtual ICollection<ToolsUs> ToolsUses1 { get; set; }
+        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<UserSession> UserSessions { get; set; }
+        public virtual ICollection<WriteOffTool> WriteOffTools { get; set; }
     }
 }

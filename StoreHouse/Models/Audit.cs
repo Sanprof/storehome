@@ -12,15 +12,17 @@ namespace StoreHouse.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class UserSession
+    public partial class Audit
     {
-        public int UserSessionID { get; set; }
+        public int AuditID { get; set; }
         public int WorkerID { get; set; }
-        public string Token { get; set; }
-        public System.DateTime Expired { get; set; }
-        public bool RememberMe { get; set; }
-        public System.DateTime CreatedDate { get; set; }
+        public int ToolID { get; set; }
+        public int Action { get; set; }
+        public int Count { get; set; }
+        public bool Readed { get; set; }
+        public System.DateTime CreationDate { get; set; }
     
+        public virtual Tool Tool { get; set; }
         public virtual Worker Worker { get; set; }
     }
 }

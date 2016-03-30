@@ -32,7 +32,7 @@
         var isValid = true;
         var keys = allKeys != null ? getKeys(self) : self.properiesMap();
         ko.utils.arrayForEach(keys, function (item) {
-            if (item in self && 'hasError' in self[item]) {
+            if (item in self && self[item] != undefined && ko.isObservable(self[item]) && 'hasError' in self[item]) {
                 self[item].valueHasMutated();
                 if (self[item].hasError()) {
                     isValid = false;

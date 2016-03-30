@@ -22,7 +22,7 @@ namespace StoreHouse.Models
         public System.DateTime CreationDate { get; set; }
     
         public virtual Tool Tool { get; set; }
-        public virtual Worker ManageWorker { get; set; }
         public virtual Worker Worker { get; set; }
+        public virtual Worker Worker1 { get; set; }
     }
 }

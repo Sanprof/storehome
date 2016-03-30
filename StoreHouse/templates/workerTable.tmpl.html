@@ -1,8 +1,10 @@
-﻿<div class="row bottom-buffer">
+﻿<!-- ko if: rootM.privilege() <= 1 -->
+<div class="row bottom-buffer">
     <div class="col-xs-12">
         <button class="btn btn-primary pull-right" data-bind="click: addNewClick"><span class="pull-left text-left-icon">Добавить работника</span><i class="fa fa-plus-square-o"></i></button>
     </div>
 </div>
+<!-- /ko -->
 <table class="table table-striped table-bordered table-hover dataTable tvalign-middle">
     <thead>
         <tr>
@@ -36,9 +38,11 @@
                                                     click: onChangeSortable.bind($data, 'toolscount')">
                 <span>Инструменты</span>
             </th>
+            <!-- ko if: rootM.privilege() <= 1 -->
             <th width="100">
                 <span>Меню</span>
             </th>
+            <!-- /ko -->
         </tr>
     </thead>
     <!-- ko if: rootApiItems().length > 0 -->
@@ -61,6 +65,7 @@
                 <span data-bind="html: toolscount, attr: {title: toolscount}" class="span-with-info"></span>
                 <i class="fa fa-sign-in pull-right text-success" style="margin-top: 3px;" data-bind="click: toolscount() > 0 ? $parent.userInfoClick : null, css: {'disabled': toolscount() == 0, 'clicable': toolscount()>0}"></i>
             </td>
+            <!-- ko if: rootM.privilege() <= 1 -->
             <td class="text-center">
                 <div class="dropdown">
                     <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'position_menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
@@ -70,6 +75,7 @@
                     </ul>
                 </div>
             </td>
+            <!-- /ko -->
         </tr>
         <!-- /ko -->
     </tbody>

@@ -1,61 +1,59 @@
-﻿<div class="group-editor">
-    <div class="row bottom-buffer">
-        <div class="col-xs-3 prop-name">
-            <span class="pull-right label-form-control">Должность:</span>
+﻿<div class="row bottom-buffer">
+    <div class="col-xs-3 prop-name">
+        <span class="pull-right label-form-control">Должность</span>
+    </div>
+    <div class="col-xs-8">
+        <div class="btn-group btn-block" data-bind="css: {'has-error': position_edit.hasError()}">
+            <button type="button" class="btn btn-default dropdown-toggle btn-block form-control" data-toggle="dropdown">
+                <span data-bind="text: position_edit() != null ? position_edit() : 'Выберите должность'" class="pull-left"></span>
+                <span class="caret pull-right"></span>
+            </button>
+            <label class="control-label" data-bind="visible: position_edit.hasError, text: position_edit.validationMessage">
+            </label>
+            <ul class="dropdown-menu" role="menu" data-bind="foreach: $parents[2].positions()">
+                <li><a href="javascript:void(0)" data-bind="click: $parent.onChangePosition.bind($data, $parent)"><span data-bind="text: name"></span></a></li>
+            </ul>
         </div>
-        <div class="col-xs-8">
-            <div class="btn-group btn-block" data-bind="css: {'has-error': position_edit.hasError()}">
-                <button type="button" class="btn btn-default dropdown-toggle btn-block form-control" data-toggle="dropdown">
-                    <span data-bind="text: position_edit() != null ? position_edit() : 'Выберите должность'" class="pull-left"></span>
-                    <span class="caret pull-right"></span>
-                </button>
-                <label class="control-label" data-bind="visible: position_edit.hasError, text: position_edit.validationMessage">
+    </div>
+</div>
+<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Фамилия</span>
+    </div>
+    <div class="col-xs-8">
+        <div class="control-group" data-bind="css: {'has-error': lastname_edit.hasError()}">
+            <div class="controls">
+                <input data-bind="value: lastname_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите фамилию', type: 'text'}" class="form-control center-block text-input" />
+                <label class="control-label" data-bind="visible: lastname_edit.hasError, text: lastname_edit.validationMessage">
                 </label>
-                <ul class="dropdown-menu" role="menu" data-bind="foreach: $parents[2].positions()">
-                    <li><a href="javascript:void(0)" data-bind="click: $parent.onChangePosition.bind($data, $parent)"><span data-bind="text: name"></span></a></li>
-                </ul>
             </div>
         </div>
     </div>
-    <div class="row bottom-buffer">
-        <div class="col-xs-3">
-            <span class="pull-right label-form-control">Фамилия:</span>
-        </div>
-        <div class="col-xs-8">
-            <div class="control-group" data-bind="css: {'has-error': lastname_edit.hasError()}">
-                <div class="controls">
-                    <input data-bind="value: lastname_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите фамилию', type: 'text'}" class="form-control center-block text-input" />
-                    <label class="control-label" data-bind="visible: lastname_edit.hasError, text: lastname_edit.validationMessage">
-                    </label>
-                </div>
+</div>
+<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Имя</span>
+    </div>
+    <div class="col-xs-8">
+        <div class="control-group" data-bind="css: {'has-error': firstname_edit.hasError()}">
+            <div class="controls">
+                <input data-bind="value: firstname_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите имя', type: 'text'}" class="form-control center-block text-input" />
+                <label class="control-label" data-bind="visible: firstname_edit.hasError, text: firstname_edit.validationMessage">
+                </label>
             </div>
         </div>
     </div>
-    <div class="row bottom-buffer">
-        <div class="col-xs-3">
-            <span class="pull-right label-form-control">Имя:</span>
-        </div>
-        <div class="col-xs-8">
-            <div class="control-group" data-bind="css: {'has-error': firstname_edit.hasError()}">
-                <div class="controls">
-                    <input data-bind="value: firstname_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите имя', type: 'text'}" class="form-control center-block text-input" />
-                    <label class="control-label" data-bind="visible: firstname_edit.hasError, text: firstname_edit.validationMessage">
-                    </label>
-                </div>
-            </div>
-        </div>
+</div>
+<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Отчество</span>
     </div>
-    <div class="row bottom-buffer">
-        <div class="col-xs-3">
-            <span class="pull-right label-form-control">Отчество:</span>
-        </div>
-        <div class="col-xs-8">
-            <div class="control-group" data-bind="css: {'has-error': middlename_edit.hasError()}">
-                <div class="controls">
-                    <input data-bind="value: middlename_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите отчество', type: 'text'}" class="form-control center-block text-input" />
-                    <label class="control-label" data-bind="visible: middlename_edit.hasError, text: middlename_edit.validationMessage">
-                    </label>
-                </div>
+    <div class="col-xs-8">
+        <div class="control-group" data-bind="css: {'has-error': middlename_edit.hasError()}">
+            <div class="controls">
+                <input data-bind="value: middlename_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите отчество', type: 'text'}" class="form-control center-block text-input" />
+                <label class="control-label" data-bind="visible: middlename_edit.hasError, text: middlename_edit.validationMessage">
+                </label>
             </div>
         </div>
     </div>

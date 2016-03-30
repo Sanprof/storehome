@@ -3,6 +3,7 @@
     BaseObject.call(self);
     Newable.call(self);
 
+    self.parent = null;
     self.name = ko.observable();
     self.toolscount = ko.observable();
     self.toolsinuse = ko.observable();

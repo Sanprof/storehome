@@ -5,7 +5,7 @@
 
     self.headerName("Инcтрументы");
     self.iconCSS("fa-gears");
-    self.templateName = 'tools';
+    self.templateName('tools');
     self.flatTools = ko.observable(false);
 
     self.categoryManager = new CategoryManager();

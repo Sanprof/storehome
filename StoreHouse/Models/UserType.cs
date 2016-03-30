@@ -22,7 +22,7 @@ namespace StoreHouse.Models
         public int UserTypeID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int AccessLevel { get; set; }
+        public Nullable<int> AccessLevel { get; set; }
         public System.DateTime CreationDate { get; set; }
     
         public virtual ICollection<User> Users { get; set; }

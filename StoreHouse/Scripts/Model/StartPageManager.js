@@ -9,7 +9,7 @@
     self.rootApiClass("StartPageItem");
     self.sortField("time");
     self.sortASC(false);
-    self.templateName = 'startpage';
+    self.templateName('startpage');
     self.manualLoadOnPageSize(true);
     self.pageSize(100);
 

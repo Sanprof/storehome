@@ -5,6 +5,7 @@
     DescrName.call(self);
     self.cellfrom = ko.observable();
     self.cellto = ko.observable();
+    self.candelete = ko.observable();
 
     self.showWriteOffDialog = ko.observable(false);
     self.writeoffItem = ko.observable();
@@ -252,6 +253,9 @@
     };
 
     self.applyIncIssue = function (toolID, count, workerID, isincoming, onSuccess) {
+        if (!isincoming) {
+            self.candelete(false);
+        }
         call_ajax_to_service(
                 self.rootApi() + '/incissue',
                 "POST",
@@ -269,12 +273,20 @@
             true,
             function (callBackData, method, responseData) {
                 if (responseData.status.Code == 0) {
-                    ko.utils.arrayForEach(self.infoItem().items, function (elem) {
-                        if (ko.unwrap(elem.worker.id) == ko.unwrap(item.worker.id)) {
-                            elem.count(ko.unwrap(elem.count) - ko.unwrap(item.valueToIncoming));
-                            elem.valueToIncoming(1);
-                        }
+                    var worker = ko.utils.arrayFirst(ko.unwrap(self.infoItem().items), function (elem) {
+                        return ko.unwrap(elem.worker.id) == ko.unwrap(item.worker.id);
                     });
+                    if (worker) {
+                        worker.count(ko.unwrap(worker.count) - ko.unwrap(item.valueToIncoming));
+                        if (worker.count() > 0) {
+                            worker.valueToIncoming(1);
+                        } else {
+                            self.infoItem().items.remove(worker);
+                        }
+                        if (ko.unwrap(self.infoItem().items).length == 0) {
+                            self.onInfoCancelDialog();
+                        }
+                    }
                 }
             });
     };
@@ -288,7 +300,7 @@
             function (callBackData, method, responseData) {
                 if (responseData.status.Code == 0) {
                     self.infoItem({
-                        items: ko.utils.arrayMap(responseData.response, function (item) {
+                        items: ko.observableArray(ko.utils.arrayMap(responseData.response, function (item) {
                             function EditingObject() {
                                 var self = this;
                                 self.worker = new Worker(item.worker);
@@ -301,7 +313,7 @@
                                 });
                             }
                             return new EditingObject();
-                        }),
+                        })),
                         toolname: responseData.response[0].tool.name
                     });
                     self.parent.editedCategory(self);
@@ -329,6 +341,7 @@
         ko.utils.arrayForEach(self.rootApiItems(), function (item) {
             item.min(ko.unwrap(self.cellfrom));
             item.max(ko.unwrap(self.cellto));
+            item.parent = self;
         });
     }
 

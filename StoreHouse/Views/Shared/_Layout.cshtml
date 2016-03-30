@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>@ViewBag.Title - Инструменты</title>
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/favicon.png" rel="shortcut icon" type="image/png" />
     <meta name="viewport" content="width=device-width" />
     @Styles.Render("~/Content/sbadmin")
     @Scripts.Render("~/bundles/jquery")
@@ -14,28 +14,19 @@
 </head>
 <body>
     <div id="master-div">
-        <div id="wrapper">
+        <div id="wrapper" data-bind="css: {'s-collapse': menuState}">
             <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="@Url.Content("~")">Инструменты</a>
+                <div class="s-navbar-header">
+                    <a class="navbar-brand" href="@Url.Content("~")"><i class="fa fa-book fa-2x" style="float: left;margin: -10px 10px 0 -2px;"></i>Инструменты</a><i data-bind="css: {'fa-chevron-circle-right': menuState, 'fa-chevron-circle-down': !menuState()}, click: expandCollapse" class="fa fa-2x s-toogle-btn"></i>
                 </div>
-                <ul class="nav navbar-top-links navbar-right">
+                <ul class="nav navbar-top-links s-navbar-right">
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                            <i class="fa fa-user fa-fw"></i> <span class="sli-top-menu-lable" data-bind="text: username"></span> <i class="fa fa-caret-down"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-user">
                             <li>
-                                <a href="#"><i class="fa fa-user fa-fw"></i> Профиль</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-gear fa-fw"></i> Настройки</a>
+                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'ChangePasswordManager')"><i class="fa fa-gear fa-fw"></i> Настройки</a>
                             </li>
                             <li class="divider"></li>
                             <li>
@@ -44,32 +35,43 @@
                         </ul>
                     </li>
                 </ul>
-                <div class="navbar-default sidebar" role="navigation">
-                    <div class="sidebar-nav navbar-collapse">
-                        <ul class="nav" id="side-menu">
+                <div class="navbar-default s-left-side">
+                    <div class="sidebar-nav">
+                        <ul class="nav">
                             <li>
-                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'StartPageManager')"><i class="fa fa-bar-chart fa-fw"></i> Главная</a>
+                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'StartPageManager')"><i class="fa fa-bar-chart fa-fw"></i> <span class="s-left-side-text">Главная</span></a>
                             </li>
                             <li>
-                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'ToolsControlManager')"><i class="fa fa-gears fa-fw"></i> Инструменты</a>
+                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'ToolsControlManager')"><i class="fa fa-gears fa-fw"></i> <span class="s-left-side-text">Инструменты</span></a>
                             </li>
+                            <!-- ko if: rootM.privilege() <= 1 -->
                             <li>
-                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'PositionManager')"><i class="fa fa-street-view fa-fw"></i> Должности</a>
+                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'PositionManager')"><i class="fa fa-street-view fa-fw"></i> <span class="s-left-side-text">Должности</span></a>
                             </li>
+                            <!-- /ko -->
                             <li>
-                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'WorkerManager')"><i class="fa fa-users fa-fw"></i> Работники</a>
+                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'WorkerManager')"><i class="fa fa-users fa-fw"></i> <span class="s-left-side-text">Работники</span></a>
                             </li>
+                            <!-- ko if: rootM.privilege() <= 2 -->
                             <li>
-                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'WriteOffManager')"><i class="fa fa-trash fa-fw"></i> Списанные</a>
+                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'WriteOffManager')"><i class="fa fa-trash fa-fw"></i> <span class="s-left-side-text">Списанные</span></a>
                             </li>
+                            <!-- /ko -->
+                            <!-- ko if: rootM.privilege() <= 1 -->
                             <li>
-                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'AccountsManager')"><i class="fa fa-user-plus fa-fw"></i> Учетные записи</a>
+                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'AccountsManager')"><i class="fa fa-user-plus fa-fw"></i> <span class="s-left-side-text">Учетные записи</span></a>
                             </li>
+                            <!-- /ko -->
+                            <!-- ko if: rootM.privilege() <= 1 -->
+                            <li>
+                                <a href="javascript:void(0)" data-bind="click: onMenuItemClick.bind($data, 'AuditManager')"><i class="fa fa-envelope-o fa-fw"></i> <span class="s-left-side-text">Аудит</span></a>
+                            </li>
+                            <!-- /ko -->
                         </ul>
                     </div>
                 </div>
             </nav>
-            <div id="page-wrapper">
+            <div id="s-page-wrapper">
                 @RenderBody()
             </div>
         </div>
@@ -86,7 +88,6 @@
         infuser.defaults.templateSuffix = ".tmpl.html";
         infuser.defaults.templateUrl = "templates";
         infuser.defaults.ajax.cache = false;
-        //ko.validation.registerExtenders();
         /* Apply bindings for MasterModel */
         var rootM = new MasterModel();
         /*pager.extendWithPage(rootM);*/

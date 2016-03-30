@@ -16,24 +16,26 @@ namespace StoreHouse.Models
     {
         public Tool()
         {
+            this.Audits = new HashSet<Audit>();
             this.DeletedTools = new HashSet<DeletedTool>();
-            this.WriteOffTools = new HashSet<WriteOffTool>();
             this.ToolsUses = new HashSet<ToolsUs>();
+            this.WriteOffTools = new HashSet<WriteOffTool>();
         }
     
         public int ToolID { get; set; }
         public int CategoryID { get; set; }
         public string Name { get; set; }
         public int Count { get; set; }
+        public int Cell { get; set; }
         public Nullable<bool> IsDeleted { get; set; }
         public System.DateTime CreationDate { get; set; }
-        public int Cell { get; set; }
         public Nullable<int> LowCount { get; set; }
         public Nullable<int> LowerCount { get; set; }
     
+        public virtual ICollection<Audit> Audits { get; set; }
         public virtual Category Category { get; set; }
         public virtual ICollection<DeletedTool> DeletedTools { get; set; }
-        public virtual ICollection<WriteOffTool> WriteOffTools { get; set; }
         public virtual ICollection<ToolsUs> ToolsUses { get; set; }
+        public virtual ICollection<WriteOffTool> WriteOffTools { get; set; }
     }
 }

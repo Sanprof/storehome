@@ -12,6 +12,7 @@
     app_maintenance_deleted: "Special maintenance for app '{0}' has been deleted!",
     app_group_saved: "Application group '{0}' has been saved!",
     category_deleted: "Категория '{0}' удалена!",
+    account_deleted: "Учетная запись '{0}' удалена!",
     app_deleted: "Application '{0}' has been deleted!",
     user_deleted: "User '{0}' has been deleted!",
     password_recovered: "Your password has been recovered and sent to your Email",
@@ -29,6 +30,7 @@
 
 var confirmationJournal = {
     delete_category: "Вы действительно хотите удалить категорию и все инструменты связанные с ней?",
+    delete_account: "Вы действительно хотите удалить данную учетную запись?",
     delete_tool: "Вы действительно хотите удалить инструмент?",
     delete_position: "Вы действительно хотите удалить должность и всех работников связанных с ней?",
     delete_worker: "Вы действительно хотите удалить работника?",

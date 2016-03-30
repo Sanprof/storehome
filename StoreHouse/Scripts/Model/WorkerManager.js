@@ -8,7 +8,7 @@
     self.rootApi('workers');
     self.rootApiClass("Worker");
     self.sortField('lastname');
-    self.templateName = 'workers';
+    self.templateName('workers');
     self.positions = ko.observableArray();
 
     self.showIssueDialog = ko.observable(false);
@@ -152,7 +152,7 @@
             function (callBackData, method, responseData) {
                 if (responseData.status.Code == 0) {
                     self.infoItem({
-                        items: ko.utils.arrayMap(responseData.response, function (item) {
+                        items: ko.observableArray(ko.utils.arrayMap(responseData.response, function (item) {
                             function EditingObject() {
                                 var self = this;
                                 self.workerid = item.id;
@@ -165,7 +165,7 @@
                                 });
                             }
                             return new EditingObject();
-                        }),
+                        })),
                         workername: ko.utils.arrayFirst(self.rootApiItems(), function (item) {
                             return ko.unwrap(item.id) == responseData.response[0].id;
                         }).fullName()
@@ -203,12 +203,20 @@
             true,
             function (callBackData, method, responseData) {
                 if (responseData.status.Code == 0) {
-                    ko.utils.arrayForEach(self.infoItem().items, function (elem) {
-                        if (ko.unwrap(elem.id) == ko.unwrap(item.id)) {
-                            elem.count(ko.unwrap(elem.count) - ko.unwrap(item.valueToIncoming));
-                            elem.valueToIncoming(1);
-                        }
+                    var tool = ko.utils.arrayFirst(ko.unwrap(self.infoItem().items), function (elem) {
+                        return ko.unwrap(elem.id) == ko.unwrap(item.id);
                     });
+                    if (tool) {
+                        tool.count(ko.unwrap(tool.count) - ko.unwrap(item.valueToIncoming));
+                        if (tool.count() > 0) {
+                            tool.valueToIncoming(1);
+                        } else {
+                            self.infoItem().items.remove(tool);
+                        }
+                        if (ko.unwrap(self.infoItem().items).length == 0) {
+                            self.onInfoCancelDialog();
+                        }
+                    }
                 }
             });
     };

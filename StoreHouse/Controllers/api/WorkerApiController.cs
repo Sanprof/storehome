@@ -136,5 +136,37 @@ namespace StoreHouse.Controllers.api
             response = objs;
             return Ok(ApiResponseManager.CreateResponse(new Status(status), response));
         }
+
+        [Route("changepassword")]
+        [HttpPost]
+        public async Task<IHttpActionResult> ChangePassword([FromBody]ChangePasswordModel data)
+        {
+            var status = default(Code);
+            var response = false;
+            int? userID = UserSessionState.UserID(data.token);
+            if (userID.HasValue)
+            {
+                var dbuser = store
+                    .Users
+                    .Where(u => u.WorkerID.CompareTo(userID.Value) == 0 && (!u.IsDeleted.HasValue || (u.IsDeleted.HasValue && !u.IsDeleted.Value)))
+                    .FirstOrDefault();
+                if (dbuser != null)
+                {
+                    if (dbuser.Password.ToUpper().CompareTo(PasswordGenerator.GetPasswordSHA1(Convert.ToString(data.oldpass), dbuser.Salt)) != 0)
+                        status = Code.OldPassIncorrect;
+                    else
+                    {
+                        dbuser.Password = PasswordGenerator.GetPasswordSHA1(data.newpass, dbuser.Salt);
+                        store.SaveChanges();
+                        response = true;
+                    }
+                }
+                else
+                    status = Code.NotFound;
+            }
+            else
+                status = Code.AuthRequired;
+            return Ok(ApiResponseManager.CreateResponse(new Status(status), response));
+        }
     }
 }

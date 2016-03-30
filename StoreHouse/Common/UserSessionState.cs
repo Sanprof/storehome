@@ -112,7 +112,7 @@ namespace StoreHouse.Common
 
         public static int? UserID(object key)
         {
-            return userSessions.ContainsKey(Convert.ToString(key)) ? (int?)userSessions[Convert.ToString(key)].UserID : null;
+            return userSessions.ContainsKey(Convert.ToString(key)) ? userSessions[Convert.ToString(key)].UserID : (int?)null;
         }
 
         public static void RemoveByUserID(int userID)

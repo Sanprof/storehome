@@ -1,8 +1,10 @@
-﻿<div class="row bottom-buffer">
+﻿<!-- ko if: rootM.privilege() <= 2 -->
+<div class="row bottom-buffer">
     <div class="col-xs-12">
         <button class="btn btn-primary pull-right" data-bind="click: addNewClick"><span class="pull-left text-left-icon">Добавить категорию</span><i class="fa fa-plus-square-o"></i></button>
     </div>
 </div>
+<!-- /ko -->
 <table class="table table-striped table-bordered table-hover dataTable tvalign-middle">
     <thead>
         <tr>
@@ -27,9 +29,11 @@
                                                     click: onChangeSortable.bind($data, 'toolscount')">
                 <span>Количество инструментов</span>
             </th>
+            <!-- ko if: rootM.privilege() <= 2 -->
             <th width="100">
                 <span>Меню</span>
             </th>
+            <!-- /ko -->
         </tr>
     </thead>
     <!-- ko if: rootApiItems().length > 0 -->
@@ -48,6 +52,7 @@
             <td class="text-center">
                 <i class="fa fa-gears" style="margin-right: 10px;"></i><span data-bind="html: toolscount, attr:{title: toolscount}"></span>
             </td>
+            <!-- ko if: rootM.privilege() <= 2 -->
             <td class="text-center">
                 <div class="dropdown">
                     <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'category_menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
@@ -55,10 +60,13 @@
                         <li class="clicable" data-bind="click: addToolClick"><a><i class="fa fa-plus-square text-success text-right-icon"></i>Добавить инструмент</a></li>
                         <li class="divider s-divider"></li>
                         <li class="clicable" data-bind="click: $parent.editClick"><a><i class="fa fa-edit text-primary text-right-icon"></i>Изменить</a></li>
+                        <!-- ko if: candelete() == true -->
                         <li class="clicable" data-bind="click: $parent.onDeleteCategory"><a><i class="fa fa-trash-o text-danger text-right-icon"></i>Удалить</a></li>
+                        <!-- /ko -->
                     </ul>
                 </div>
             </td>
+            <!-- /ko -->
         </tr>
         <tr data-bind="visible: expanded">
             <td colspan="6">
@@ -109,9 +117,11 @@
                                     <span class="clicable dropdown-toggle" data-toggle="dropdown" aria-expanded="false" data-bind="attr: {'id': 'menu' + $index()}">Действия<i class="fa fa-caret-square-o-down text-left-icon"></i></span>
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu" data-bind="attr: {'aria-labelledby': 'menu' + $index()}">
                                         <li class="clicable" data-bind="click: canIssuing() ? $parent.onIssueTool : null, css : {'disabled': !canIssuing()}"><a><i class="fa fa-sign-out text-danger text-right-icon"></i>Выдать</a></li>
+                                        <!-- ko if: rootM.privilege() <= 2 -->
                                         <li class="clicable" data-bind="click: $parent.editClick"><a><i class="fa fa-edit text-primary clicable text-right-icon"></i>Изменить</a></li>
                                         <li class="clicable" data-bind="click: canIssuing() ? $parent.onWriteOffTool : null, css : {'disabled': !canIssuing()}"><a><i class="fa fa-minus-square text-danger text-right-icon"></i>Списать</a></li>
                                         <li class="clicable" data-bind="click: !canIncoming() ? $parent.onDeleteTool : null, css : {'disabled': canIncoming()}"><a><i class="fa fa-trash-o text-danger text-right-icon"></i>Удалить</a></li>
+                                        <!-- /ko -->
                                     </ul>
                                 </div>
                             </td>
@@ -122,7 +132,7 @@
                     <tbody>
                         <tr>
                             <td colspan="8" align="center">
-                                <span>Нет ни одной инструмента, добавьте новый, нажав на плюсик в строке категории</span>
+                                <span>Нет ни одной инструмента, добавьте новый, выбрав "Добавить инструмент" из меню категории</span>
                             </td>
                         </tr>
                     </tbody>
@@ -229,7 +239,7 @@
                     title: 'Прием инструментов',
                     subtitle: ko.unwrap($data.toolname),
                     editor: 'usersByUsetTool',
-                    object: $data.items,
+                    object: ko.unwrap($data.items),
                     onCancelClick: $parent.onInfoCancelDialog,
                     onApplyClick: null
                 }

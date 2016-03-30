@@ -38,6 +38,7 @@ namespace StoreHouse.Controllers.api
                        .Where(t => t.CategoryID == c.CategoryID && (!t.IsDeleted.HasValue || (t.IsDeleted.HasValue && !t.IsDeleted.Value)))
                        .ToList();
                    expando.toolscount = tools.Count > 0 ? tools.Select(t => t.Count).AsEnumerable().Sum() : 0;
+                   expando.candelete = ToolsHelper.ToolStatByCategoryID(store, c.CategoryID) == 0;
                    return expando;
                })
                .ToList<object>();
@@ -69,7 +70,9 @@ namespace StoreHouse.Controllers.api
                    name = c.Name,
                    description = c.Description,
                    toolpositions = 0,
-                   toolscount = 0
+                   toolscount = 0,
+                   cellfrom = c.CellFrom,
+                   cellto = c.CellTo
                })
                .FirstOrDefault();
             return Ok(ApiResponseManager.CreateResponse(new Status(status), response));

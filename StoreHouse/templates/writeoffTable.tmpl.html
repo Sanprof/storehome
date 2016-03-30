@@ -20,7 +20,7 @@
                 <span>Дата</span>
             </th>
             <th>
-                <span>Работник</span>
+                <span>Выполнил</span>
             </th>
             <th>
                 <span>Причина</span>
@@ -41,7 +41,7 @@
                 <span data-bind="html: localTime, attr: {title: localTime}"></span>
             </td>
             <td>
-                <span data-bind="text: worker().lastname, attr:{title: worker().fullName()}"></span>
+                <span data-bind="text: worker().shortFullName(), attr:{title: worker().fullName()}"></span>
             </td>
             <td>
                 <span data-bind="html: comment, attr: {title: comment}"></span>

@@ -27,16 +27,26 @@ namespace StoreHouse.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Audit> Audits { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<DeletedTool> DeletedTools { get; set; }
         public virtual DbSet<Position> Positions { get; set; }
         public virtual DbSet<Tool> Tools { get; set; }
-        public virtual DbSet<Worker> Workers { get; set; }
-        public virtual DbSet<UserSession> UserSessions { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<WriteOffTool> WriteOffTools { get; set; }
         public virtual DbSet<ToolsUs> ToolsUses { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserSession> UserSessions { get; set; }
         public virtual DbSet<UserType> UserTypes { get; set; }
+        public virtual DbSet<Worker> Workers { get; set; }
+        public virtual DbSet<WriteOffTool> WriteOffTools { get; set; }
+    
+        public virtual ObjectResult<Nullable<int>> DeleteExpiredSessions(Nullable<System.DateTime> dateOlder)
+        {
+            var dateOlderParameter = dateOlder.HasValue ?
+                new ObjectParameter("DateOlder", dateOlder) :
+                new ObjectParameter("DateOlder", typeof(System.DateTime));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("DeleteExpiredSessions", dateOlderParameter);
+        }
     
         public virtual ObjectResult<Nullable<int>> DeleteUserSessionsByToken(string token)
         {
@@ -56,13 +66,13 @@ namespace StoreHouse.Models
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("DeleteUserSessionsByUserID", workerIDParameter);
         }
     
-        public virtual ObjectResult<Nullable<int>> DeleteExpiredSessions(Nullable<System.DateTime> dateOlder)
+        public virtual ObjectResult<Get_ToolsUsedByUser_Result> Get_ToolsUsedByUser(Nullable<int> workerID)
         {
-            var dateOlderParameter = dateOlder.HasValue ?
-                new ObjectParameter("DateOlder", dateOlder) :
-                new ObjectParameter("DateOlder", typeof(System.DateTime));
+            var workerIDParameter = workerID.HasValue ?
+                new ObjectParameter("WorkerID", workerID) :
+                new ObjectParameter("WorkerID", typeof(int));
     
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("DeleteExpiredSessions", dateOlderParameter);
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Get_ToolsUsedByUser_Result>("Get_ToolsUsedByUser", workerIDParameter);
         }
     
         public virtual ObjectResult<Get_UsersUsedTool_Result> Get_UsersUsedTool(Nullable<int> toolID)
@@ -72,15 +82,6 @@ namespace StoreHouse.Models
                 new ObjectParameter("ToolID", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Get_UsersUsedTool_Result>("Get_UsersUsedTool", toolIDParameter);
-        }
-    
-        public virtual ObjectResult<Get_ToolsUsedByUser_Result> Get_ToolsUsedByUser(Nullable<int> workerID)
-        {
-            var workerIDParameter = workerID.HasValue ?
-                new ObjectParameter("WorkerID", workerID) :
-                new ObjectParameter("WorkerID", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Get_ToolsUsedByUser_Result>("Get_ToolsUsedByUser", workerIDParameter);
         }
     }
 }

@@ -23,7 +23,7 @@
         if (window[managerName]) {
             manager = new window[managerName](self, args);
             self.displayName("<i class=\"fa " + manager.iconCSS() + "\"></i> " + manager.headerName());
-            self.templateName(manager.templateName);
+            self.templateName(ko.unwrap(manager.templateName));
             self.activeManager(manager);
             manager.initialize();
             if (ko.unwrap(self[specialName]) == null) {
@@ -61,7 +61,7 @@
 
     self.privilege = function () {
         var access = readCookie('access');
-        return (typeof access == 'undefined' || access == null ? null : true);
+        return (typeof access == 'undefined' || access == null ? 99999 : parseInt(access));
     };
 
     self.username = ko.computed(function () {
@@ -69,4 +69,13 @@
     });
 
     self.onMenuItemClick("StartPageManager");
+
+    var menuStateCoocie = readCookie('menustate');
+
+    self.menuState = ko.observable(menuStateCoocie ? (menuStateCoocie == "true" ? true : false) : true);
+
+    self.expandCollapse = function () {
+        self.menuState(!self.menuState());
+        createCookie('menustate', ko.unwrap(self.menuState), 30);
+    }
 }

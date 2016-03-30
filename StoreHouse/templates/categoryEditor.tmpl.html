@@ -1,58 +1,29 @@
-﻿<div class="group-editor">
-    <div class="row bottom-buffer">
-        <div class="col-xs-3">
-            <span class="pull-right label-form-control">Название:</span>
-        </div>
-        <div class="col-xs-9">
-            <div class="control-group" data-bind="css: {'has-error': name_edit.hasError()}">
-                <div class="controls">
-                    <input data-bind="value: name_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите название', type: 'text'}" class="form-control center-block text-input" />
-                    <label class="control-label" data-bind="visible: name_edit.hasError, text: name_edit.validationMessage">
-                    </label>
+﻿<div data-bind="template: 'namedescreditor'"></div>
+<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Ячейки:</span>
+    </div>
+    <div class="col-xs-3 col-xs-offset-1">
+        <div class="control-group" data-bind="css: {'has-error': cellfrom_edit.hasError()}">
+            <div class="controls">
+                <div class="input-group">
+                    <span class="input-group-addon">C</span>
+                    <input data-bind="value: cellfrom_edit, unumeric: cellfrom_edit, valueUpdate : 'afterkeydown', attr: {placeholder: '0', type: 'text'}" class="form-control center-block text-input text-center" />
                 </div>
+                <label class="control-label" data-bind="visible: cellfrom_edit.hasError, text: cellfrom_edit.validationMessage">
+                </label>
             </div>
         </div>
     </div>
-    <div class="row bottom-buffer">
-        <div class="col-xs-3">
-            <span class="pull-right label-form-control">Описание:</span>
-        </div>
-        <div class="col-xs-9">
-            <div class="control-group" data-bind="css: {'has-error': description_edit.hasError()}">
-                <div class="controls">
-                    <input data-bind="value: description_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите описание', type: 'text'}" class="form-control center-block text-input" />
-                    <label class="control-label" data-bind="visible: description_edit.hasError, text: description_edit.validationMessage">
-                    </label>
+    <div class="col-xs-3 col-xs-offset-1">
+        <div class="control-group" data-bind="css: {'has-error': cellto_edit.hasError()}">
+            <div class="controls">
+                <div class="input-group">
+                    <span class="input-group-addon">По</span>
+                    <input data-bind="value: cellto_edit, unumeric: cellto_edit, valueUpdate : 'afterkeydown', attr: {placeholder: '0', type: 'text'}" class="form-control center-block text-input text-center" />
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="row bottom-buffer">
-        <div class="col-xs-3">
-            <span class="pull-right label-form-control">Ячейки:</span>
-        </div>
-        <div class="col-xs-3 col-xs-offset-1">
-            <div class="control-group" data-bind="css: {'has-error': cellfrom_edit.hasError()}">
-                <div class="controls">
-                    <div class="input-group">
-                        <span class="input-group-addon">C</span>
-                        <input data-bind="value: cellfrom_edit, unumeric: cellfrom_edit, valueUpdate : 'afterkeydown', attr: {placeholder: '0', type: 'text'}" class="form-control center-block text-input" />
-                    </div>
-                    <label class="control-label" data-bind="visible: cellfrom_edit.hasError, text: cellfrom_edit.validationMessage">
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="col-xs-3 col-xs-offset-1">
-            <div class="control-group" data-bind="css: {'has-error': cellto_edit.hasError()}">
-                <div class="controls">
-                    <div class="input-group">
-                        <span class="input-group-addon">По</span>
-                        <input data-bind="value: cellto_edit, unumeric: cellto_edit, valueUpdate : 'afterkeydown', attr: {placeholder: '0', type: 'text'}" class="form-control center-block text-input" />
-                    </div>
-                    <label class="control-label" data-bind="visible: cellto_edit.hasError, text: cellto_edit.validationMessage">
-                    </label>
-                </div>
+                <label class="control-label" data-bind="visible: cellto_edit.hasError, text: cellto_edit.validationMessage">
+                </label>
             </div>
         </div>
     </div>

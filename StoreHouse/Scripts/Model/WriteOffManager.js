@@ -9,5 +9,5 @@
     self.rootApiClass("StartPageItem");
     self.sortField("time");
     self.sortASC(false);
-    self.templateName = 'writeoffs';
+    self.templateName('writeoffs');
 }

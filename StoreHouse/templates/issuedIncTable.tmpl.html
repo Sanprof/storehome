@@ -20,7 +20,7 @@
                 <span>Дата</span>
             </th>
             <th>
-                <span>Работник</span>
+                <span>Выполнил</span>
             </th>
         </tr>
     </thead>
@@ -28,7 +28,7 @@
     <tbody data-bind="foreach: rootApiItems">
         <tr>
             <td>
-                <i class="fa text-right-icon" data-bind="css: {'fa-arrow-circle-down text-danger': !isinc(), 'fa-arrow-circle-up text-success': isinc}"></i>
+                <i class="fa text-right-icon" data-bind="css: {'fa-upload text-danger': !isinc(), 'fa-download text-success': isinc}"></i>
                 <span data-bind="html: name, attr: {title: name}"></span>
             </td>
             <td class="text-center">
@@ -47,7 +47,7 @@
     <tbody>
         <tr>
             <td colspan="5" align="center">
-                <span>Не найдено ни одного материала в истории</span>
+                <span>Действия по инструментам отсутствуют</span>
             </td>
         </tr>
     </tbody>

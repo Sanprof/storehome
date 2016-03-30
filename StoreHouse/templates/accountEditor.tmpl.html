@@ -1,0 +1,70 @@
+﻿<div class="row bottom-buffer">
+    <div class="col-xs-3 prop-name">
+        <span class="pull-right label-form-control">Тип</span>
+    </div>
+    <div class="col-xs-9">
+        <div class="btn-group btn-block" data-bind="css: {'has-error': typeid_edit.hasError()}">
+            <button type="button" class="btn btn-default dropdown-toggle btn-block form-control" data-toggle="dropdown">
+                <span data-bind="text: type_edit() != null ? type_edit() : 'Выберите тип'" class="pull-left"></span>
+                <span class="caret pull-right"></span>
+            </button>
+            <label class="control-label" data-bind="visible: typeid_edit.hasError, text: typeid_edit.validationMessage">
+            </label>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu" data-bind="foreach: $parents[2].types()">
+                <li><a href="javascript:void(0)" data-bind="click: $parent.onChangeType.bind($data, $parent)"><span data-bind="text: name"></span></a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Учетная запись</span>
+    </div>
+    <div class="col-xs-9">
+        <div class="control-group" data-bind="css: {'has-error': username_edit.hasError()}">
+            <div class="controls">
+                <input data-bind="value: username_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите имя учетной записи', 'disabled': disabled }" class="form-control center-block text-input" />
+                <label class="control-label" data-bind="visible: username_edit.hasError, text: username_edit.validationMessage">
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Email</span>
+    </div>
+    <div class="col-xs-9">
+        <div class="control-group" data-bind="css: {'has-error': email_edit.hasError()}">
+            <div class="controls">
+                <input data-bind="value: email_edit, valueUpdate : 'afterkeydown', attr: {placeholder: 'Введите имя учетной записи' }" class="form-control center-block text-input" />
+                <label class="control-label" data-bind="visible: email_edit.hasError, text: email_edit.validationMessage">
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ko if: worker_edit.visible -->
+<div class="row bottom-buffer">
+    <div class="col-xs-3">
+        <span class="pull-right label-form-control">Работник</span>
+    </div>
+    <div class="col-xs-9">
+        <div class="control-group" data-bind="css: {'has-error': workerid_edit.hasError()}">
+            <div class="btn-group">
+                <div class="input-group">
+                    <input data-bind="value: worker_edit.value, typeaHead: ko.unwrap($parents[2].allWorkers), valueUpdate : 'afterkeydown', attr: {type: 'text'}" data-provide="typeahead" class="form-control center-block text-input" />
+                    <div class="input-group-btn">
+                        <span class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-caret-down"></i></span>
+                        <ul class="dropdown-menu dropdown-menu-right scrollable-menu" role="menu" data-bind="foreach: $parents[2].allWorkers">
+                            <li><a href="javascript:void(0)" data-bind="click: $parent.selectWorker.bind($data, $parent)"><span data-bind="text: name"></span></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <label class="control-label" data-bind="visible: workerid_edit.hasError, text: workerid_edit.validationMessage">
+            </label>
+        </div>
+    </div>
+</div>
+<!-- /ko -->

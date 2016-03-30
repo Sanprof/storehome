@@ -17,6 +17,18 @@ namespace StoreHouse.Common
             return 0;
         }
 
+        public static int ToolStatByCategoryID(Models.Entities store, int categoryID)
+        {
+            var toolsUses = store
+                .ToolsUses
+                .Where(t => !t.Tool.Category.IsDeleted && (!t.Tool.IsDeleted.HasValue || (t.Tool.IsDeleted.HasValue && !t.Tool.IsDeleted.Value)) && t.Tool.CategoryID == categoryID)
+                .Select(it => it.Count)
+                .ToList();
+            if (toolsUses.Count > 0)
+                return toolsUses.Sum();
+            return 0;
+        }
+
         public static int ToolStatByToolID(Models.Entities store, int toolID)
         {
             var toolsUses = store

@@ -24,6 +24,7 @@ namespace StoreHouse
                 "~/Scripts/bootstrap/metisMenu.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/model").Include(
+                "~/Scripts/model/tooglejs.js",
                 "~/Scripts/model/Utils.js",
                 "~/Scripts/model/DateUtils.js",
                 "~/Scripts/model/CookieManager.js",
@@ -59,7 +60,10 @@ namespace StoreHouse
                 "~/Scripts/model/Position.js",
                 "~/Scripts/model/WriteOffManager.js",
                 "~/Scripts/model/AccountsManager.js",
-                "~/Scripts/model/Accounts.js",
+                "~/Scripts/model/Account.js",
+                "~/Scripts/model/AuditManager.js",
+                "~/Scripts/model/Audit.js",
+                "~/Scripts/model/ChangePasswordManager.js",
                 "~/Scripts/model/LoginUser.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/auth").Include(
@@ -68,6 +72,7 @@ namespace StoreHouse
                 "~/Scripts/model/CookieManager.js",
                 "~/Scripts/model/LoginUser.js",
                 "~/Scripts/model/koCustomBindings.js",
+                "~/Scripts/model/StringFormatter.js",
                 "~/Scripts/model/koExtenders.js",
                 "~/Scripts/model/Alerts.js",
                 "~/Scripts/model/TextJournals.js"));

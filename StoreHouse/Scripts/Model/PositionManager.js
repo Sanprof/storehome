@@ -6,7 +6,7 @@
 
     self.headerName("Должности");
     self.iconCSS("fa-street-view");
-    self.templateName = 'positions';
+    self.templateName('positions');
     self.rootApi('positions');
     self.rootApiClass('Position');
     self.sortField('name');

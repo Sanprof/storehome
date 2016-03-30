@@ -10,6 +10,7 @@
     self.iconCSS = ko.observable();
     self.firstInited = ko.observable(false);
     self.headerName = ko.observable();
+    self.templateName = ko.observable();
 
     self.initialize = function () {
         call_ajax_to_service(self.rootApi(),

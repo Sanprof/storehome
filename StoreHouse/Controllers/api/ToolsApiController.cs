@@ -1,4 +1,5 @@
-﻿using SLICKernel.Common;
+﻿using Newtonsoft.Json.Converters;
+using SLICKernel.Common;
 using StoreHouse.Common;
 using StoreHouse.Models;
 using StoreHouse.Models.Constants;
@@ -90,8 +91,10 @@ namespace StoreHouse.Controllers.api
 
         [HttpPut]
         [Route("incat")]
-        public async Task<IHttpActionResult> AddTool([FromBody]dynamic data)
+        public async Task<IHttpActionResult> AddTool(dynamic data)
         {
+            data = Newtonsoft.Json.JsonConvert.DeserializeObject<ExpandoObject>(Convert.ToString(data), new ExpandoObjectConverter());
+            int userID = UserSessionState.UserID(data.token);
             Code status = default(Code);
             dynamic response = null;
             var dbObj = new Tool()
@@ -104,15 +107,27 @@ namespace StoreHouse.Controllers.api
                 CreationDate = DateTimeOffset.UtcNow.DateTime
             };
             if (ExpandoHelper.PropertyExists(data, "low"))
-                dbObj.LowCount = (int)data.low;
+                dbObj.LowCount = Convert.ToInt32(data.low);
             if (ExpandoHelper.PropertyExists(data, "lower"))
-                dbObj.LowerCount = (int)data.lower;
+                dbObj.LowerCount = Convert.ToInt32(data.lower);
             store.Tools.Add(dbObj);
+            store.Audits.Add(new Audit()
+            {
+                Action = (int)ToolAction.Add,
+                Count = dbObj.Count,
+                Readed = false,
+                ToolID = dbObj.ToolID,
+                WorkerID = store.Users.FirstOrDefault(u => u.WorkerID == userID).WorkerID,
+                CreationDate = DateTimeOffset.UtcNow.DateTime,
+            });
             store.SaveChanges();
             response = new
                {
                    id = dbObj.ToolID,
                    name = dbObj.Name,
+                   cell = dbObj.Cell,
+                   low = dbObj.LowCount,
+                   lower = dbObj.LowerCount,
                    toolscount = dbObj.Count,
                    toolsinuse = 0,
                };
@@ -129,11 +144,24 @@ namespace StoreHouse.Controllers.api
                 .Tools
                 .Where(t => t.ToolID == data.id)
                 .FirstOrDefault();
+            int userID = UserSessionState.UserID(data.token).Value;
             if (dbObj != null)
             {
                 dbObj.Name = data.name;
                 dbObj.Cell = data.cell;
                 dbObj.Count += data.count;
+                if (data.count > 0)
+                {
+                    store.Audits.Add(new Audit()
+                    {
+                        Action = (int)ToolAction.Add,
+                        Count = data.count,
+                        Readed = false,
+                        ToolID = dbObj.ToolID,
+                        WorkerID = store.Users.FirstOrDefault(u => u.WorkerID == userID).WorkerID,
+                        CreationDate = DateTimeOffset.UtcNow.DateTime,
+                    });
+                }
                 if (data.low.HasValue)
                     dbObj.LowCount = data.low.Value;
                 if (data.lower.HasValue)
@@ -143,6 +171,9 @@ namespace StoreHouse.Controllers.api
                 {
                     id = dbObj.ToolID,
                     name = dbObj.Name,
+                    cell = dbObj.Cell,
+                    low = dbObj.LowCount,
+                    lower = dbObj.LowerCount,
                     toolscount = dbObj.Count,
                     toolsinuse = Math.Abs(ToolsHelper.ToolStatByToolID(store, dbObj.ToolID)),
                 };
@@ -173,7 +204,7 @@ namespace StoreHouse.Controllers.api
                     .Add(new DeletedTool()
                     {
                         ToolID = data.id,
-                        WorkerID = store.Users.FirstOrDefault(u => u.UserID == userId.Value).WorkerID,
+                        WorkerID = store.Users.FirstOrDefault(u => u.WorkerID == userId.Value).WorkerID,
                         DeletedDate = DateTimeOffset.UtcNow.DateTime
                     });
                     store.SaveChanges();
@@ -214,11 +245,20 @@ namespace StoreHouse.Controllers.api
                             .Add(new WriteOffTool()
                             {
                                 ToolID = data.id,
-                                WorkerID = store.Users.FirstOrDefault(u => u.UserID == userID.Value).WorkerID,
+                                WorkerID = store.Users.FirstOrDefault(u => u.WorkerID == userID.Value).WorkerID,
                                 Count = data.count,
                                 Comment = data.comment,
                                 WriteOffTime = DateTimeOffset.UtcNow.DateTime
                             });
+                        store.Audits.Add(new Audit()
+                        {
+                            Action = (int)ToolAction.WriteOff,
+                            Count = data.count,
+                            Readed = false,
+                            ToolID = data.id,
+                            WorkerID = store.Users.FirstOrDefault(u => u.WorkerID == userID.Value).WorkerID,
+                            CreationDate = DateTimeOffset.UtcNow.DateTime,
+                        });
                         var tool = store
                             .Tools
                             .FirstOrDefault(t => t.ToolID == data.id);
@@ -252,9 +292,18 @@ namespace StoreHouse.Controllers.api
                 {
                     ToolID = data.id,
                     WorkerID = data.workerid,
-                    ManageWorkerID = store.Users.FirstOrDefault(u => u.UserID == userID.Value).WorkerID,
+                    ManageWorkerID = store.Users.FirstOrDefault(u => u.WorkerID == userID.Value).WorkerID,
                     Count = data.count * (data.isinc ? 1 : -1),
                     CreationDate = DateTimeOffset.UtcNow.DateTime
+                });
+                store.Audits.Add(new Audit()
+                {
+                    Action = (int)(data.isinc ? ToolAction.Take : ToolAction.Issue),
+                    Count = data.count,
+                    Readed = false,
+                    ToolID = data.id,
+                    WorkerID = store.Users.FirstOrDefault(u => u.WorkerID == userID).WorkerID,
+                    CreationDate = DateTimeOffset.UtcNow.DateTime,
                 });
                 store.SaveChanges();
                 response = Math.Abs(ToolsHelper.ToolStatByToolID(store, data.id));

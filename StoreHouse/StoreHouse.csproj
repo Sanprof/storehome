@@ -20,6 +20,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -151,6 +152,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Common\ApiResponseManager.cs" />
+    <Compile Include="Common\AuditAction.cs" />
     <Compile Include="Common\AuthenticateAttribute.cs" />
     <Compile Include="Common\Code.cs" />
     <Compile Include="Common\CustomDirectRouteProvider.cs" />
@@ -163,6 +165,8 @@
     <Compile Include="Common\Token.cs" />
     <Compile Include="Common\ToolsHelper.cs" />
     <Compile Include="Common\UserSessionState.cs" />
+    <Compile Include="Controllers\api\AccountApiController.cs" />
+    <Compile Include="Controllers\api\AuditApiController.cs" />
     <Compile Include="Controllers\api\BaseApiController.cs" />
     <Compile Include="Controllers\api\CategoryApiController.cs" />
     <Compile Include="Controllers\api\PositionApiController.cs" />
@@ -177,6 +181,9 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Audit.cs">
+      <DependentUpon>Storage.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Category.cs">
       <DependentUpon>Storage.tt</DependentUpon>
@@ -193,6 +200,7 @@
     </Compile>
     <Compile Include="Models\ICodeValidation.cs" />
     <Compile Include="Models\ListPartialModel.cs" />
+    <Compile Include="Models\MultiDBAction.cs" />
     <Compile Include="Models\Position.cs">
       <DependentUpon>Storage.tt</DependentUpon>
     </Compile>
@@ -242,14 +250,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\serg_test.mdf" />
-    <Content Include="App_Data\serg_test_log.ldf">
-      <DependentUpon>serg_test.mdf</DependentUpon>
-    </Content>
-    <Content Include="App_Data\storage.mdf" />
-    <Content Include="App_Data\storage_log.ldf">
-      <DependentUpon>storage.mdf</DependentUpon>
-    </Content>
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -264,6 +264,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Content\font-awesome\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\font-awesome\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="favicon.png" />
     <Content Include="Global.asax" />
     <EntityDeploy Include="Models\Storage.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -311,12 +312,15 @@
     <Content Include="Scripts\knockout\koExternalTemplateEngine_all.js" />
     <Content Include="Scripts\knockout\pager.js" />
     <Content Include="Scripts\Model\Account.js" />
+    <Content Include="Scripts\Model\Audit.js" />
+    <Content Include="Scripts\Model\AuditManager.js" />
     <Content Include="Scripts\Model\AccountsManager.js" />
     <Content Include="Scripts\Model\Alerts.js" />
     <Content Include="Scripts\Model\BaseObject.js" />
     <Content Include="Scripts\bootstrap\bootstrap3-typeahead.js" />
     <Content Include="Scripts\Model\Category.js" />
     <Content Include="Scripts\Model\CategoryManager.js" />
+    <Content Include="Scripts\Model\ChangePasswordManager.js" />
     <Content Include="Scripts\Model\Confirmation.js" />
     <Content Include="Scripts\Model\Constants.js" />
     <Content Include="Scripts\Model\CookieManager.js" />
@@ -340,6 +344,7 @@
     <Content Include="Scripts\Model\StringFormatter.js" />
     <Content Include="Scripts\Model\TablePager.js" />
     <Content Include="Scripts\Model\TextJournals.js" />
+    <Content Include="Scripts\Model\tooglejs.js" />
     <Content Include="Scripts\Model\Tool.js" />
     <Content Include="Scripts\Model\ToolsControlManager.js" />
     <Content Include="Scripts\Model\ToolsManager.js" />
@@ -348,8 +353,13 @@
     <Content Include="Scripts\Model\WorkerManager.js" />
     <Content Include="Scripts\Model\WriteOffManager.js" />
     <Content Include="templates\accountsTable.tmpl.html" />
+    <Content Include="templates\audits.tmpl.html" />
+    <Content Include="templates\auditsTable.tmpl.html" />
     <Content Include="templates\categoryEditor.tmpl.html" />
+    <Content Include="templates\accountEditor.tmpl.html" />
+    <Content Include="templates\changepass.tmpl.html" />
     <Content Include="templates\issuedincomingEditor.tmpl.html" />
+    <Content Include="templates\nameDescrEditor.tmpl.html" />
     <Content Include="templates\positions.tmpl.html" />
     <Content Include="templates\positionTable.tmpl.html" />
     <Content Include="templates\categoryTable.tmpl.html" />
